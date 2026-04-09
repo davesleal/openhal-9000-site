@@ -97,11 +97,13 @@
       font-size: 32px; font-weight: 900;
       color: #e3f0f2;
       letter-spacing: 4px;
+      filter: blur(0.4px);
       margin: 40px 0 12px;
     }
     .hero-tagline {
       font-size: 14px;
       color: #3e6682;
+      filter: blur(0.25px);
       margin-bottom: 32px;
       letter-spacing: 2px;
     }
@@ -206,6 +208,7 @@
       font-family: 'Michroma', 'Zalando Sans Expanded', sans-serif;
       font-size: 10px; letter-spacing: 2px;
       color: #3e6682; font-weight: 400;
+      filter: blur(0.4px);
       margin-bottom: 24px;
     }
 
@@ -390,12 +393,14 @@
       font-size: 14px; font-weight: 700;
       color: #e3f0f2;
       letter-spacing: 2px;
+      filter: blur(0.4px);
       margin-bottom: 8px;
     }
     .feature-card p {
       font-size: 12px;
       color: #8899aa;
       letter-spacing: 1px;
+      filter: blur(0.25px);
       line-height: 1.7;
     }
 
@@ -432,6 +437,7 @@
       line-height: 1.15;
       text-transform: uppercase;
       position: relative;
+      filter: blur(0.5px);
       animation: hiJitter 4.3s ease-in-out infinite;
     }
     .v2-label::before {
@@ -453,6 +459,7 @@
       background-color: #000;
       background-size: var(--grid-size) var(--grid-size);
       background-position: 0 0;
+      filter: blur(0.5px);
       animation: hiJitter 5.1s ease-in-out infinite;
     }
     .v2-monitor::before {
@@ -609,7 +616,7 @@
       stroke-width: 1.1;
       stroke-linejoin: round;
       stroke-linecap: round;
- filter: drop-shadow(0 0 0.8px rgba(255,255,255,0.8)) drop-shadow(0 0 2.5px rgba(200,255,255,0.5));
+      filter: blur(0.35px) drop-shadow(0 0 0.8px rgba(255,255,255,0.8)) drop-shadow(0 0 2.5px rgba(200,255,255,0.5));
       -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.9) 70%, rgba(0,0,0,1) 100%);
               mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.9) 70%, rgba(0,0,0,1) 100%);
       -webkit-mask-size: var(--vit-tail) 100%;
@@ -660,6 +667,7 @@
       color: #3e6682;
       font-weight: 400;
       text-transform: uppercase;
+      filter: blur(0.4px);
     }
     .ibmLogo {
       height: 22px;
@@ -728,6 +736,7 @@
       text-shadow: 0 0 6px rgba(177,239,225,0.5);
       letter-spacing: 0.3px;
       text-transform: none;
+      filter: blur(0.25px);
     }
     .term-prompt { color: #5fbcbb; }
     .term-comment { color: #6a8a8a; }
@@ -1573,6 +1582,7 @@
       color: #ff2a2a;
       text-transform: uppercase;
       line-height: 1.25;
+      filter: blur(0.4px);
     }
     /* Wide red horizontal stripe holding the bars */
     .lmt-stripe {
@@ -1865,6 +1875,7 @@
       color: #ff2a2a;
       text-transform: uppercase;
       line-height: 1.25;
+      filter: blur(0.4px);
       margin-bottom: -1px;
     }
     .tg-footer {
@@ -2091,6 +2102,7 @@
       letter-spacing: 3px;
       line-height: 1.7;
       text-transform: uppercase;
+      filter: blur(0.4px);
     }
 
     /* ── Zero Gravity Toilet style instructions ── */
@@ -2365,11 +2377,13 @@
       font-family: 'Courier New', monospace;
       font-size: 14px; color: #3e6682;
       flex-shrink: 0; width: 28px;
+      filter: blur(0.25px);
     }
     .step-title {
       font-size: 14px; font-weight: 700;
       color: #e3f0f2;
       letter-spacing: 2px;
+      filter: blur(0.4px);
       margin-bottom: 8px;
     }
     .step-code {
@@ -2387,6 +2401,7 @@
     .step-desc {
       font-size: 14px;
       color: #e3f0f2;
+      filter: blur(0.25px);
       letter-spacing: 1px;
       line-height: 1.7;
     }
@@ -2406,11 +2421,13 @@
     .footer-credit {
       font-size: 12px; color: #8aaecf;
       letter-spacing: 2px;
+      filter: blur(0.25px);
     }
     .footer-disclaimer {
       font-size: 11px; color: #6a89a8;
       margin-top: 12px;
       letter-spacing: 1px;
+      filter: blur(0.25px);
       text-transform: none;
       line-height: 1.6;
     }
@@ -2477,6 +2494,7 @@
       width: 100%; height: 100%; border-radius: 7px; position: relative;
       overflow: hidden; border: 1px solid #080808;
       box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+      filter: blur(0.6px);
       animation: hiJitter 3.7s ease-in-out infinite;
     }
     .hi-s::after {
@@ -2680,7 +2698,7 @@
 
     /* ═══ C6 — CHK. PROG. 601 (purple) ═══ */
     .v-c6 .hi-s { background: var(--purple-bg); padding: 16px; display: flex; flex-direction: column; }
- .v-c6 .chk-title { font-family: 'Agdasima', system-ui, sans-serif; font-weight: 700; font-size: 18px; filter: ; color: var(--text-bright); letter-spacing: 0.12em; margin-bottom: 14px; }
+    .v-c6 .chk-title { font-family: 'Agdasima', system-ui, sans-serif; font-weight: 700; font-size: 18px; filter: blur(0.25px); color: var(--text-bright); letter-spacing: 0.12em; margin-bottom: 14px; }
     .v-c6 .chk-data { font-family: var(--font-data); font-size: 8px; color: rgba(200,180,255,0.55); line-height: 1.6; flex: 1; }
     .v-c6 .chk-foot { margin-top: auto; font-size: 8px; color: rgba(180,160,240,0.45); display: grid; grid-template-columns: 50px 1fr; gap: 2px 6px; font-family: var(--font-data); }
 
@@ -2911,7 +2929,7 @@
     }
     .v-c9 .com-big {
       font-family: var(--font-display); font-weight: 900; font-size: 48px;
- filter: ; letter-spacing: 0.12em;
+      filter: blur(0.25px); letter-spacing: 0.12em;
       color: #fff; line-height: 1;
       animation: comCycle 8s ease-in-out infinite;
     }
@@ -2996,7 +3014,7 @@
     .v-c14 .hi-s { background: #0a1418; padding: 10px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
     .v-c14 .s14-title {
       font-family: var(--font-display); font-weight: 900; font-size: 11px;
- filter: ; color: rgba(200,230,255,0.75); letter-spacing: 0.1em;
+      filter: blur(0.25px); color: rgba(200,230,255,0.75); letter-spacing: 0.1em;
       overflow: hidden; white-space: nowrap; width: 0; animation: typeIn 0.8s steps(10) 0s 1 forwards;
     }
     .v-c14 .ind-row { display: flex; gap: 4px; }
@@ -3081,7 +3099,7 @@
     }
     .tile-big {
       font-family: var(--font-display); font-weight: 900; font-size: 48px;
- filter: ; letter-spacing: 0.12em;
+      filter: blur(0.25px); letter-spacing: 0.12em;
       color: #fff; line-height: 1;
       animation: comCycle 8s ease-in-out infinite;
     }
