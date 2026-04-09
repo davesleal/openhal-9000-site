@@ -87,7 +87,6 @@
       text-align: left;
       gap: 160px;
       width: max-content;
-      max-width: 100%;
       margin: 0 auto 24px;
     }
     .hero-stage .hi-sg-left  { margin-right: 0; }
@@ -152,6 +151,29 @@
         /* soft ambient shadow */
         0 12px 22px 0px rgba(0,0,0,0.45);
       transition: transform 0.07s ease, box-shadow 0.07s ease, background 0.07s ease;
+    }
+    .btn-hal-intro {
+      background: linear-gradient(180deg, #d62828 0%, #a81e1e 100%) !important;
+      color: #fff !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+      box-shadow:
+        0 1px 0px 0px rgba(255,255,255,0.25) inset,
+        0 -1px 0px 0px #7a1616 inset,
+        1px 0 0px 0px #c02020 inset,
+        -1px 0 0px 0px #c02020 inset,
+        0 6px 0px 0px #6e1212,
+        0 7px 3px 0px rgba(0,0,0,0.4),
+        0 12px 22px 0px rgba(0,0,0,0.45) !important;
+    }
+    .btn-hal-intro:active, .btn-hal-intro.pressed {
+      background: linear-gradient(180deg, #b82222 0%, #8a1818 100%) !important;
+      box-shadow:
+        0 1px 0px 0px rgba(255,255,255,0.2) inset,
+        0 -1px 0px 0px #6a1212 inset,
+        1px 0 0px 0px #a01c1c inset,
+        -1px 0 0px 0px #a01c1c inset,
+        0 1px 0px 0px #5a0e0e,
+        0 2px 3px 0px rgba(0,0,0,0.3) !important;
     }
     .btn.illuminated {
       background: linear-gradient(180deg, #ffffff 0%, #e6e8eb 100%);
@@ -2494,7 +2516,6 @@
       width: 100%; height: 100%; border-radius: 7px; position: relative;
       overflow: hidden; border: 1px solid #080808;
       box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-      filter: blur(0.6px);
       animation: hiJitter 3.7s ease-in-out infinite;
     }
     .hi-s::after {
@@ -4837,7 +4858,7 @@
     <p class="hero-tagline">Give your CLI a voice — the voice of HAL 9000</p>
     <div class="hero-actions">
       <a href="#install" class="btn illuminated">Install</a>
-      <button type="button" class="btn" id="play-label" aria-label="Play HAL 9000 voice greeting">Introduction</button>
+      <button type="button" class="btn btn-hal-intro" id="play-label" aria-label="Play HAL 9000 voice greeting">Introduction</button>
     </div>
   </div>
 
@@ -4861,8 +4882,8 @@
       <div class="feature-btns" id="feature-btns">
         <button class="btn" data-feature="tts">Native TTS</button>
         <button class="btn" data-feature="config">Zero Config</button>
-        <button class="btn" data-feature="character">In Character</button>
-        <button class="btn" data-feature="voice">Voice Control</button>
+        <button class="btn" data-feature="character">Personality</button>
+        <button class="btn" data-feature="voice">Commands</button>
       </div>
     </div>
   </section>
@@ -5217,32 +5238,29 @@
   <script>
     // Voice playback
     (function() {
-      var played = false;
+      var playing = false;
       var playBtn = document.getElementById('play-label');
       var panel = document.getElementById('hal-panel');
       var audio = new Audio('hal-greeting.wav');
       audio.preload = 'auto';
       audio.addEventListener('ended', function() {
-        playBtn.textContent = 'HAL HAS SPOKEN';
         panel.classList.remove('speaking');
+        playing = false;
       });
       audio.addEventListener('error', function() {
-        playBtn.textContent = 'INTRODUCTION';
         panel.classList.remove('speaking');
-        played = false;
+        playing = false;
       });
       function playGreeting() {
-        if (played) return;
-        played = true;
-        playBtn.textContent = 'PLAYING...';
+        if (playing) return;
+        playing = true;
         panel.classList.add('speaking');
         audio.currentTime = 0;
         var p = audio.play();
         if (p && p.catch) {
           p.catch(function() {
-            playBtn.textContent = 'INTRODUCTION';
             panel.classList.remove('speaking');
-            played = false;
+            playing = false;
           });
         }
       }
@@ -5294,7 +5312,7 @@
           ].join('\n')
         },
         character: {
-          title: 'IN CHARACTER',
+          title: 'PERSONALITY',
           body: [
             '> HAL is not a text-to-speech bot.',
             '',
@@ -5312,7 +5330,7 @@
           ].join('\n')
         },
         voice: {
-          title: 'VOICE CONTROL',
+          title: 'COMMANDS',
           body: [
             '> /hal command suite',
             '',
