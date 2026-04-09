@@ -538,18 +538,22 @@
               mask-size: var(--tail) 100%;
       -webkit-mask-repeat: no-repeat;
               mask-repeat: no-repeat;
-      animation: v2-scan var(--speed) linear infinite;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
-    .v2-sweep-1 { --tail: 850px; --speed: 6.5s; }
-    .v2-sweep-2 { --tail: 900px; --speed: 6.8s; }
-    .v2-sweep-3 { --tail: 800px; --speed: 7.2s; }
-    .v2-sweep-4 { --tail: 850px; --speed: 6.2s; }
-    .v2-sweep-5 { --tail: 800px; --speed: 7.5s; }
-    .v2-sweep-6 { --tail: 950px; --speed: 6.0s; }
-    @keyframes v2-scan {
-      0%   { -webkit-mask-position: calc(var(--tail) * -1) 0; mask-position: calc(var(--tail) * -1) 0; }
-      100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; }
-    }
+    .v2-sweep-1 { --tail: 850px; --speed: 6.5s; -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s1; animation-duration: 6.5s; }
+    .v2-sweep-2 { --tail: 900px; --speed: 6.8s; -webkit-mask-size: 900px 100%; mask-size: 900px 100%; animation-name: v2-s2; animation-duration: 6.8s; }
+    .v2-sweep-3 { --tail: 800px; --speed: 7.2s; -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s3; animation-duration: 7.2s; }
+    .v2-sweep-4 { --tail: 850px; --speed: 6.2s; -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s4; animation-duration: 6.2s; }
+    .v2-sweep-5 { --tail: 800px; --speed: 7.5s; -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s5; animation-duration: 7.5s; }
+    .v2-sweep-6 { --tail: 950px; --speed: 6.0s; -webkit-mask-size: 950px 100%; mask-size: 950px 100%; animation-name: v2-s6; animation-duration: 6.0s; }
+    /* Per-sweep keyframes with hardcoded mask-position values — Safari doesn't resolve var() inside @keyframes */
+    @keyframes v2-s1 { 0% { -webkit-mask-position: -850px 0; mask-position: -850px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
+    @keyframes v2-s2 { 0% { -webkit-mask-position: -900px 0; mask-position: -900px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
+    @keyframes v2-s3 { 0% { -webkit-mask-position: -800px 0; mask-position: -800px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
+    @keyframes v2-s4 { 0% { -webkit-mask-position: -850px 0; mask-position: -850px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
+    @keyframes v2-s5 { 0% { -webkit-mask-position: -800px 0; mask-position: -800px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
+    @keyframes v2-s6 { 0% { -webkit-mask-position: -950px 0; mask-position: -950px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
 
     /* ── Mini Vitals (v-vit: 6-row compact vitals for 240×240 hero cell) ── */
     .v-vit {
