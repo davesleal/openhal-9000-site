@@ -33,6 +33,8 @@
     .hal-panel {
       position: relative;
       width: 180px;
+      min-width: 180px;
+      flex-shrink: 0;
       /* SVG aspect ratio is 1320 / 3892 = 0.339 */
       aspect-ratio: 1320 / 3892;
       margin: 0 auto;
@@ -88,7 +90,7 @@
       text-align: left;
       gap: 160px;
       width: max-content;
-      margin: 0 auto 24px;
+      margin: 0 0 24px;
       position: relative;
       left: 50%;
       transform: translateX(-50%);
@@ -649,22 +651,24 @@
       filter: blur(0.35px) drop-shadow(0 0 0.8px rgba(255,255,255,0.8)) drop-shadow(0 0 2.5px rgba(200,255,255,0.5));
       -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.9) 70%, rgba(0,0,0,1) 100%);
               mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 15%, rgba(0,0,0,0.9) 70%, rgba(0,0,0,1) 100%);
-      -webkit-mask-size: var(--vit-tail) 100%;
-              mask-size: var(--vit-tail) 100%;
       -webkit-mask-repeat: no-repeat;
               mask-repeat: no-repeat;
-      animation: vit-scan var(--vit-speed) linear infinite;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
-    .vit-sweep-1 { --vit-tail: 140px; --vit-speed: 6.5s; }
-    .vit-sweep-2 { --vit-tail: 150px; --vit-speed: 6.8s; }
-    .vit-sweep-3 { --vit-tail: 130px; --vit-speed: 7.2s; }
-    .vit-sweep-4 { --vit-tail: 140px; --vit-speed: 6.2s; }
-    .vit-sweep-5 { --vit-tail: 130px; --vit-speed: 7.5s; }
-    .vit-sweep-6 { --vit-tail: 160px; --vit-speed: 6.0s; }
-    @keyframes vit-scan {
-      0%   { -webkit-mask-position: calc(var(--vit-tail) * -1) 0; mask-position: calc(var(--vit-tail) * -1) 0; }
-      100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; }
-    }
+    /* Per-sweep hardcoded values — Safari doesn't resolve var() inside @keyframes or animation shorthand */
+    .vit-sweep-1 { -webkit-mask-size: 140px 100%; mask-size: 140px 100%; animation-name: vit-s1; animation-duration: 6.5s; }
+    .vit-sweep-2 { -webkit-mask-size: 150px 100%; mask-size: 150px 100%; animation-name: vit-s2; animation-duration: 6.8s; }
+    .vit-sweep-3 { -webkit-mask-size: 130px 100%; mask-size: 130px 100%; animation-name: vit-s3; animation-duration: 7.2s; }
+    .vit-sweep-4 { -webkit-mask-size: 140px 100%; mask-size: 140px 100%; animation-name: vit-s4; animation-duration: 6.2s; }
+    .vit-sweep-5 { -webkit-mask-size: 130px 100%; mask-size: 130px 100%; animation-name: vit-s5; animation-duration: 7.5s; }
+    .vit-sweep-6 { -webkit-mask-size: 160px 100%; mask-size: 160px 100%; animation-name: vit-s6; animation-duration: 6.0s; }
+    @keyframes vit-s1 { 0% { -webkit-mask-position: -140px 0; mask-position: -140px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
+    @keyframes vit-s2 { 0% { -webkit-mask-position: -150px 0; mask-position: -150px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
+    @keyframes vit-s3 { 0% { -webkit-mask-position: -130px 0; mask-position: -130px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
+    @keyframes vit-s4 { 0% { -webkit-mask-position: -140px 0; mask-position: -140px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
+    @keyframes vit-s5 { 0% { -webkit-mask-position: -130px 0; mask-position: -130px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
+    @keyframes vit-s6 { 0% { -webkit-mask-position: -160px 0; mask-position: -160px 0; } 100% { -webkit-mask-position: 160px 0; mask-position: 160px 0; } }
 
     /* ── IBM CRT Screen (install section) ── */
     .ibm-section {
@@ -3870,6 +3874,12 @@
 
     @media (max-width: 1100px) {
       .hi-sg-hero { display: none; }
+      .hero-stage {
+        width: auto;
+        left: auto;
+        transform: none;
+        justify-content: center;
+      }
     }
   </style>
 </head>
