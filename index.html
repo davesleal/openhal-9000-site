@@ -1852,7 +1852,7 @@
       --hal-red: #da251d;
       --blade-w: 35px;
       --blade-h: 180px;
-      --blade-d: 50px;
+      --blade-d: 8px;
       perspective: 600px;
       perspective-origin: 50% 50%;
       flex: 0 0 auto; /* don't let .lmt-stripe-inner shrink the blade container — labels use flex:0 0 auto, must match */
@@ -1979,12 +1979,11 @@
       transform-style: preserve-3d;
       cursor: pointer;
 
-      transform: scale3d(1, 1, 0.15);
       transition: transform 1.4s cubic-bezier(0.22, 0.85, 0.25, 1);
     }
 
     .cuboid.ejected {
-      transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 6);
     }
 
     /* ======================================================
@@ -2021,7 +2020,6 @@
     .face-top,
     .face-bottom {
       outline: 1px solid rgba(255,255,255,0.25);
-      background: #fff !important;
     }
     .face-top,
     .face-bottom {
@@ -2035,7 +2033,7 @@
       left: 100%;
       width: var(--blade-d);
       height: 100%;
-      background: #fff !important;
+      background: #fff;
       transform-origin: top left;
       transform: rotateY(90deg);
     }
@@ -2049,8 +2047,7 @@
       right: 100%;
       width: var(--blade-d);
       height: 100%;
-      background: #fff !important;
-      opacity: 1;
+      background: #fff;
       transform-origin: top right;
       transform: rotateY(-90deg);
     }
@@ -2066,7 +2063,7 @@
       width: 100%;
       height: var(--blade-d);
       /* white at the front edge (bottom of the element, which is the cuboid's top-front), dark at the back */
-      background: #fff !important;
+      background: #fff;
       transform-origin: center bottom;
       transform: rotateX(-90deg);
     }
@@ -2082,7 +2079,7 @@
       width: 100%;
       height: var(--blade-d);
       /* white at the front edge (top of the element, which is the cuboid's bottom-front), dark at the back */
-      background: #fff !important;
+      background: #fff;
       transform-origin: center top;
       transform: rotateX(90deg);
     }
