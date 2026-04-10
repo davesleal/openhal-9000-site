@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="OpenHAL 9000 — A Claude Code plugin that gives Claude the voice of HAL 9000.">
-  <meta name="theme-color" content="#0b0f13">
-  <title>OpenHAL 9000 — Give Claude a Voice</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23cc2222'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ffcc33'/%3E%3C/svg%3E">
-  <style>
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel → Server Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── All site CSS (for the room) ── */
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -1996,6 +1996,8 @@
       position: absolute;
       inset: 0;
       background: rgba(255,255,255,0.1);
+      -webkit-backdrop-filter: blur(0.5px);
+      backdrop-filter: blur(0.5px);
     }
 
     .face-front {
@@ -2029,6 +2031,8 @@
     .face-top,
     .face-bottom {
       outline: 1px solid rgba(255,255,255,0.15);
+      -webkit-backdrop-filter: blur(0.5px);
+      backdrop-filter: blur(0.5px);
     }
 
     .face-right {
@@ -3855,1536 +3859,258 @@
     @media (max-width: 860px) {
       .hero-stage { gap: 120px; }
     }
+  
 
-    /* ── STATE: TUNNEL — scroll-driven zoom entry ── */
-    @property --hole {
-      syntax: '<length>';
-      inherits: false;
-      initial-value: 25vmin;
-    }
+@property --hole {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 25vmin;
+}
 
-    .lmc-stage-outer {
-      timeline-scope: --tunnel;
-    }
+/* ── SCROLL-DRIVEN ZOOM (CodePen technique) ── */
+body { background: #000; overflow-x: hidden; }
 
-    .lmc-stage-outer.state-tunnel .lmc-cabinet {
-      opacity: 0;
-      pointer-events: none;
-    }
+.hero-tunnel {
+  position: relative;
+  height: 200vh;
+  overflow: hidden;
+}
 
-    /* Black backdrop — blocks page content behind room mask */
-    .tunnel-backdrop { display: none; }
-    .lmc-stage-outer.state-tunnel .tunnel-backdrop {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 9998;
-    }
+/* White panel — the "starship" layer that zooms past */
+.hero-tunnel .panel {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  /* .panel layers (inside → out):
+     - ROOM MASK: the transparent center (var(--hole)) — shows room behind
+     - TUNNEL RING: the grey gradient band around the room mask
+     - WHITE PANEL: the solid #e8e6e2 fill beyond the ring */
+  background:
+    radial-gradient(circle at 50% 50%,
+      transparent calc(var(--hole) - 2.5vmin),
+      #0a0a0a calc(var(--hole) - 2.5vmin),
+      #111 calc(var(--hole) - 0.5vmin),
+      rgba(160,160,160,0.9) calc(var(--hole) - 0.5vmin),
+      rgba(180,180,180,0.8) var(--hole),
+      #ccc var(--hole),
+      #d5d3cf calc(var(--hole) + 1vmin),
+      #ddd calc(var(--hole) + 2vmin),
+      #e8e6e2 calc(var(--hole) + 3vmin),
+      #e8e6e2 100%);
+  --hole: 18vmin;
+  animation: panelUpscale linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0vh 100vh;
+  pointer-events: none;
+}
+/* Vignette over the white panel view */
+.hero-tunnel .panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.1) 55%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-strip,
-    .lmc-stage-outer.state-tunnel .lmc-hatches {
-      opacity: 0;
-      pointer-events: none;
-    }
+/* The room scene — sits behind the panel, unblurs as you scroll */
+.hero-tunnel .room-scene {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  pointer-events: none;
+}
 
-    /* Room stage fullscreen — behind tunnel overlay */
-    .lmc-stage-outer.state-tunnel .lmc-room-stage {
-      opacity: 1;
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      transform: none;
-      z-index: 9999;
-      background: #1c0001;
-      -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
-      mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
-      animation: tunnelRoomMask linear forwards;
-      animation-timeline: --tunnel;
-      animation-range: 0vh 100vh;
-    }
+/* Force the room to render in this context */
+.hero-tunnel .room-scene .lmc-room-stage {
+  opacity: 1 !important;
+  pointer-events: auto;
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  z-index: 1;
+  background: #1c0001;
+}
+.hero-tunnel .room-scene .lmc-room-stage .room-wrapper {
+  opacity: 1 !important;
+  pointer-events: none;
+}
+.hero-tunnel .room-scene .lmc-room-stage .ceiling-hint {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 30 !important;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  text-shadow: 0 0 12px rgba(255,100,80,0.4);
+  transition: none !important;
+  animation: hintReveal linear both !important;
+  animation-timeline: scroll(root) !important;
+  animation-range: 85vh 100vh !important;
+}
+@keyframes hintReveal {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-room-stage .room-wrapper {
-      animation: tunnelRoomReveal linear both !important;
-      animation-timeline: --tunnel !important;
-      animation-range: 0vh 100vh !important;
-    }
+/* Mask room to porthole circle — radial gradient for soft feathered edge */
+.hero-tunnel .room-scene {
+  -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
+  mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
+  animation: roomMask linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0vh 100vh;
+}
+.hero-tunnel .room-scene .room-wrapper {
+  animation: roomReveal linear both !important;
+  animation-timeline: scroll(root) !important;
+  animation-range: 0vh 100vh !important;
+}
+@keyframes roomReveal {
+  0% { filter: blur(6px); }
+  100% { filter: blur(0px); }
+}
+/* Immersive vignette + radial corner blur — fades in during scroll */
+.hero-tunnel .room-scene::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.85) 90%, black 100%);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  animation: vignetteIn linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 50vh 100vh;
+}
+@keyframes vignetteIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-room-stage .ceiling-hint {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 30;
-      transition: none;
-      animation: tunnelHintReveal linear both;
-      animation-timeline: --tunnel;
-      animation-range: 85vh 100vh;
-    }
+/* Corner blur overlay — blurred ring around edges for depth-of-field */
+.hero-tunnel .room-scene::before {
+  content: "";
+  position: fixed;
+  inset: -20px;
+  background: radial-gradient(ellipse 60% 55% at center, transparent 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.7) 85%, black 100%);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  -webkit-mask: radial-gradient(ellipse at center, transparent 35%, black 70%);
+  mask: radial-gradient(ellipse at center, transparent 35%, black 70%);
+  pointer-events: none;
+  z-index: 16;
+  opacity: 0;
+  animation: cornerBlurIn linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 60vh 100vh;
+}
+@keyframes cornerBlurIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-room-stage::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.85) 90%, black 100%);
-      pointer-events: none;
-      z-index: 15;
-      opacity: 0;
-      animation: tunnelVignetteIn linear forwards;
-      animation-timeline: --tunnel;
-      animation-range: 50vh 100vh;
-    }
+@keyframes roomMask {
+  0% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
+    mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin);
+  }
+  10% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin);
+    mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin);
+  }
+  25% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin);
+    mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin);
+  }
+  40% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin);
+    mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin);
+  }
+  60% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin);
+    mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin);
+  }
+  80% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin);
+    mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin);
+  }
+  100% {
+    -webkit-mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin);
+    mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin);
+  }
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-room-stage::before {
-      content: '';
-      position: fixed;
-      inset: -20px;
-      background: radial-gradient(ellipse 60% 55% at center, transparent 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.7) 85%, black 100%);
-      -webkit-backdrop-filter: blur(3px);
-      backdrop-filter: blur(3px);
-      -webkit-mask: radial-gradient(ellipse at center, transparent 35%, black 70%);
-      mask: radial-gradient(ellipse at center, transparent 35%, black 70%);
-      pointer-events: none;
-      z-index: 16;
-      opacity: 0;
-      animation: tunnelCornerBlurIn linear forwards;
-      animation-timeline: --tunnel;
-      animation-range: 60vh 100vh;
-    }
+@keyframes panelUpscale {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    --hole: 25vmin;
+    filter: blur(0px);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(-50%, -50%) scale(2);
+    --hole: 28vmin;
+    filter: blur(0px);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(6);
+    --hole: 34vmin;
+    filter: blur(1px);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(14);
+    --hole: 42vmin;
+    filter: blur(3px);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(25);
+    --hole: 55vmin;
+    filter: blur(6px);
+    opacity: 0.5;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(35);
+    --hole: 65vmin;
+    filter: blur(10px);
+    opacity: 0.1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(45);
+    --hole: 75vmin;
+    filter: blur(14px);
+    opacity: 0;
+  }
+}
 
-    .lmc-stage-outer.state-tunnel .lmc-room-stage-close {
-      display: block;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 2147483647;
-      pointer-events: auto;
-    }
 
-    /* Tunnel overlay — the scroll container */
-    .tunnel-overlay {
-      display: none;
-    }
-    .lmc-stage-outer.state-tunnel .tunnel-overlay {
-      display: block;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scroll-timeline-name: --tunnel;
-      scroll-timeline-axis: block;
-    }
-    .tunnel-overlay .tunnel-scroll-area {
-      height: 200vh;
-      position: relative;
-      overflow: hidden;
-    }
-    .tunnel-overlay .tunnel-panel {
-      position: sticky;
-      top: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: 20;
-      --hole: 18vmin;
-      background: radial-gradient(circle at 50% 50%,
-        transparent calc(var(--hole) - 2.5vmin),
-        #0a0a0a calc(var(--hole) - 2.5vmin),
-        #111 calc(var(--hole) - 0.5vmin),
-        rgba(160,160,160,0.9) calc(var(--hole) - 0.5vmin),
-        rgba(180,180,180,0.8) var(--hole),
-        #ccc var(--hole),
-        #d5d3cf calc(var(--hole) + 1vmin),
-        #ddd calc(var(--hole) + 2vmin),
-        #e8e6e2 calc(var(--hole) + 3vmin),
-        #e8e6e2 100%);
-      transform-origin: center;
-      pointer-events: none;
-      animation: tunnelPanelUpscale linear forwards;
-      animation-timeline: --tunnel;
-      animation-range: 0vh 100vh;
-    }
-    .tunnel-overlay .tunnel-panel::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.1) 55%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
-    }
-
-    @keyframes tunnelPanelUpscale {
-      0%   { transform: scale(1);  --hole: 25vmin; filter: blur(0px);  opacity: 1; }
-      10%  { transform: scale(2);  --hole: 28vmin; filter: blur(0px);  opacity: 1; }
-      25%  { transform: scale(6);  --hole: 34vmin; filter: blur(1px);  opacity: 1; }
-      40%  { transform: scale(14); --hole: 42vmin; filter: blur(3px);  opacity: 0.9; }
-      60%  { transform: scale(25); --hole: 55vmin; filter: blur(6px);  opacity: 0.5; }
-      80%  { transform: scale(35); --hole: 65vmin; filter: blur(10px); opacity: 0.1; }
-      100% { transform: scale(45); --hole: 75vmin; filter: blur(14px); opacity: 0; }
-    }
-
-    @keyframes tunnelRoomMask {
-      0%   { -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin); mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin); }
-      10%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin); mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin); }
-      25%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin); mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin); }
-      40%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin); mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin); }
-      60%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin); mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin); }
-      80%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin); mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin); }
-      100% { -webkit-mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin); mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin); }
-    }
-
-    @keyframes tunnelRoomReveal {
-      0%   { filter: blur(6px); }
-      100% { filter: blur(0px); }
-    }
-    @keyframes tunnelVignetteIn {
-      0%   { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes tunnelCornerBlurIn {
-      0%   { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes tunnelHintReveal {
-      0%   { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-  </style>
+</style>
 </head>
 <body>
 
-  <!-- ═══ HERO ═══ -->
-  <div class="hero">
-    <div class="hero-stage">
-      <div class="hi-sg hi-sg-hero hi-sg-left">
-        <div class="hi-bz hi-slot" data-id="C 1" data-slot="0"></div>
-        <div class="hi-bz hi-slot" data-id="C 2" data-slot="1"></div>
-        <div class="hi-bz hi-slot" data-id="C 3" data-slot="2"></div>
-        <div class="hi-bz hi-slot" data-id="C 4" data-slot="3"></div>
-      </div>
-      <div class="hal-panel" id="hal-panel" role="button" aria-label="Play HAL 9000 voice greeting">
-        <div class="hal-panel-click"></div>
-      </div>
-      <div class="hi-sg hi-sg-hero hi-sg-right">
-        <div class="hi-bz hi-slot" data-id="C 5" data-slot="4"></div>
-        <div class="hi-bz hi-slot" data-id="C 6" data-slot="5"></div>
-        <div class="hi-bz hi-slot" data-id="C 7" data-slot="6"></div>
-        <div class="hi-bz hi-slot" data-id="C 8" data-slot="7"></div>
-      </div>
-      <div class="hi-cell-pool" aria-hidden="true">
-<!-- C9: COM STATUS -->
-<div class="hi-view v-c9"><div class="hi-s">
-  <div class="com-inner">
-    <p class="com-pmt">HTT: 6V-12</p>
-    <div class="com-big">COM</div>
-  </div>
-</div></div>
-
-<!-- C10: ORBITAL TRACKER I/MG3 -->
-<div class="hi-view v-c10"><div class="hi-s">
-  <svg viewBox="0 0 450 450">
-    <line x1="100" y1="225" x2="400" y2="225" class="line-axis" />
-    <polygon points="395,220 403,225 395,230" fill="rgba(255,255,255,0.8)" />
-    <line x1="225" y1="205" x2="225" y2="245" class="line-axis" />
-
-    <circle cx="225" cy="225" r="25" class="line-orbit" pathLength="100" />
-    <circle cx="225" cy="225" r="32" class="line-orbit" pathLength="100" />
-
-    <text x="225" y="229" class="text-label blinking-load" text-anchor="middle" font-size="9px">LOADING</text>
-
-    <text x="225" y="193" class="text-label loading-type" text-anchor="middle">90</text>
-    <text x="183" y="229" class="text-label loading-type" text-anchor="end">180</text>
-    <text x="225" y="270" class="text-label loading-type" text-anchor="middle">270</text>
-
-    <path id="c10-orbit1" class="line-orbit" pathLength="100" d="M 225,95 A 130,130 0 1,1 225,355 A 130,130 0 1,1 225,95" />
-
-    <g transform="rotate(35 225 225)">
-      <path id="c10-orbit2" class="line-orbit" pathLength="100" d="M 225,65 A 90,160 0 1,1 225,385 A 90,160 0 1,1 225,65" />
-    </g>
-
-    <g transform="rotate(-25 225 225) translate(-25, 0)">
-      <path id="c10-orbit3" class="line-orbit" pathLength="100" d="M 225,95 A 150,130 0 1,1 225,355 A 150,130 0 1,1 225,95" />
-    </g>
-
-    <g transform="rotate(10 225 225) translate(-20, 40)">
-      <path id="c10-orbit4" class="line-orbit" pathLength="100" d="M 225,15 A 190,210 0 1,1 225,435 A 190,210 0 1,1 225,15" />
-    </g>
-
-    <g opacity="0">
-      <set attributeName="opacity" to="1" begin="0.1s" fill="freeze" />
-      <animateMotion dur="14s" repeatCount="indefinite" begin="0s">
-        <mpath href="#c10-orbit1" />
-      </animateMotion>
-      <circle r="4" class="tracker-node" />
-      <text dx="8" dy="-5" class="text-label">LS-106</text>
-    </g>
-
-    <g transform="rotate(35 225 225)">
-      <g opacity="0">
-        <set attributeName="opacity" to="1" begin="2s" fill="freeze" />
-        <animateMotion dur="10s" repeatCount="indefinite" begin="2s">
-          <mpath href="#c10-orbit2" />
-        </animateMotion>
-        <circle r="3" class="tracker-node" />
-      </g>
-    </g>
-
-    <g transform="rotate(-25 225 225) translate(-25, 0)">
-      <g opacity="0">
-        <set attributeName="opacity" to="1" begin="5s" fill="freeze" />
-        <animateMotion dur="18s" repeatCount="indefinite" begin="5s">
-          <mpath href="#c10-orbit3" />
-        </animateMotion>
-        <circle r="4" class="tracker-node" />
-      </g>
-    </g>
-
-    <g transform="rotate(10 225 225) translate(-20, 40)">
-      <g opacity="0">
-        <set attributeName="opacity" to="1" begin="11s" fill="freeze" />
-        <animateMotion dur="24s" repeatCount="indefinite" begin="11s">
-          <mpath href="#c10-orbit4" />
-        </animateMotion>
-        <circle r="4.5" class="tracker-node" />
-        <text dx="12" dy="12" transform="rotate(-10)" class="text-label">NB6-680CT</text>
-      </g>
-    </g>
-
-    <text x="420" y="420" class="text-title" text-anchor="end">I/MG3</text>
-  </svg>
-</div></div>
-
-<!-- C11: HEROS TERMINAL -->
-<div class="hi-view v-c11"><div class="hi-s">
-  <div id="c11-terminal"></div>
-</div></div>
-
-<!-- C12: SVG WORMHOLE -->
-<div class="hi-view v-c12"><div class="hi-s"><div id="wormhole-svg"></div></div></div>
-
-<!-- VIT: MINI VITALS DASHBOARD (6-row compact) -->
-<div class="hi-view v-vit"><div class="hi-s">
-  <div class="vit-row">
-    <div class="vit-label vit-bg-cardio">Cardio<br>Vasc</div>
-    <div class="vit-monitor vit-grid-cardio">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-1" preserveAspectRatio="none"><path id="vit-path-1" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-  <div class="vit-row">
-    <div class="vit-label vit-bg-metabolic">Metab<br>Levl</div>
-    <div class="vit-monitor vit-grid-metabolic">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-2" preserveAspectRatio="none"><path id="vit-path-2" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-  <div class="vit-row">
-    <div class="vit-label vit-bg-cns">CNS</div>
-    <div class="vit-monitor vit-grid-cns">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-3" preserveAspectRatio="none"><path id="vit-path-3" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-  <div class="vit-row">
-    <div class="vit-label vit-bg-pulmonary">Pulm<br>Func</div>
-    <div class="vit-monitor vit-grid-pulmonary">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-4" preserveAspectRatio="none"><path id="vit-path-4" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-  <div class="vit-row">
-    <div class="vit-label vit-bg-systems">Syst<br>Intg</div>
-    <div class="vit-monitor vit-grid-systems">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-5" preserveAspectRatio="none"><path id="vit-path-5" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-  <div class="vit-row">
-    <div class="vit-label vit-bg-locomotor">Loco<br>Syst</div>
-    <div class="vit-monitor vit-grid-locomotor">
-      <svg viewBox="0 0 160 30" class="vit-wave vit-wave-6" preserveAspectRatio="none"><path id="vit-path-6" class="vit-sweep" d="" /></svg>
-    </div>
-  </div>
-</div></div>
-
-<!-- C13: WIREFRAME GLOBE (large, centered) -->
-<div class="hi-view v-c13"><div class="hi-s">
-  <div class="c13-label">EARTH REF // GEOSTAT TRACK</div>
-  <div id="c13-globe"></div>
-  <div class="c13-meta">
-    <div class="col">INCL: 0.02&deg;<br>PERIOD: 23h 56m 4s</div>
-    <div class="col">LON: 122.4&deg; W<br>VEL: 3.07 km/s</div>
-  </div>
-</div></div>
-
-<!-- C14: STATUS INDICATORS -->
-<div class="hi-view v-c14"><div class="hi-s">
-  <div class="s14-title">SYS STATUS</div>
-  <div class="ind-row">
-    <div class="ind ind-g">PWR</div>
-    <div class="ind ind-m">NAV</div>
-    <div class="ind ind-b">COM</div>
-    <div class="ind ind-g">LSS</div>
-    <div class="ind ind-y">THR</div>
-  </div>
-  <div class="ind-row">
-    <div class="ind ind-g">ANT</div>
-    <div class="ind ind-r">AE35</div>
-    <div class="ind ind-b">FUL</div>
-    <div class="ind ind-g">GRV</div>
-    <div class="ind ind-g">RAD</div>
-  </div>
-  <div class="s14-readout typing">
-    <span class="tw-line">RE: PROPULSION/FUEL</span>
-    <span class="tw-line">OXIDIZER BOIL-OFF RATES</span>
-    <span class="tw-line">STATUS: POWER ON</span>
-    <span class="tw-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MEMORY LOAD</span>
-    <span class="tw-line">ANTENNA GAIN: 43.2 dBi</span>
-    <span class="tw-line">BEAM WIDTH: 0.6&deg;</span>
-    <span class="tw-line">SIGNAL LOCK: CONFIRMED</span>
-  </div>
-  <div class="s14-foot">HEROS-RT 6.01.3a // UPTIME 4832h</div>
-</div></div>
-
-<!-- C15: SIGNAL WAVEFORM -->
-<div class="hi-view v-c15"><div class="hi-s">
-  <div class="c15-label">SIG/RX CH.4 // 2292 MHz</div>
-  <canvas id="c15-wave"></canvas>
-  <div class="c15-data">
-    <span class="tw-line">AGC: -118.4 dBm</span>
-    <span class="tw-line">SNR: 22.6 dB</span>
-    <span class="tw-line">BER: 3.2&times;10&#8315;&#8310;</span>
-  </div>
-</div></div>
-
-<!-- C1: MULTI-CURVE PLOT -->
-<div class="hi-view v-c1"><div class="hi-s">
-  <div class="label-top">VEC(4)4</div>
-  <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <line class="axis-l" x1="20" y1="10" x2="20" y2="140"/><line class="axis-l" x1="20" y1="140" x2="190" y2="140"/>
-    <line class="grid-l" x1="20" y1="40" x2="190" y2="40"/><line class="grid-l" x1="20" y1="75" x2="190" y2="75"/><line class="grid-l" x1="20" y1="110" x2="190" y2="110"/>
-    <line class="grid-l" x1="60" y1="10" x2="60" y2="140"/><line class="grid-l" x1="100" y1="10" x2="100" y2="140"/><line class="grid-l" x1="140" y1="10" x2="140" y2="140"/>
-    <path class="curve" d="M20,138 Q40,135 55,122 T80,65 Q95,22 110,18 Q130,38 150,75 Q170,122 190,136"/>
-    <path class="curve" d="M20,138 Q40,134 55,120 T80,70 Q95,30 110,26 Q130,46 150,82 Q170,125 190,137"/>
-    <path class="curve" d="M20,138 Q40,133 55,118 T80,76 Q95,38 110,34 Q130,52 150,88 Q170,128 190,137"/>
-    <path class="curve" d="M20,138 Q40,132 55,116 T80,82 Q95,46 110,42 Q130,58 150,92 Q170,130 190,138"/>
-    <path class="curve" d="M20,138 Q40,131 55,114 T80,88 Q95,54 110,50 Q130,64 150,96 Q170,132 190,138"/>
-    <path class="curve" d="M20,138 Q42,132 58,118 T82,94 Q96,62 112,58 Q132,70 152,100 Q172,132 190,139"/>
-    <path class="curve" d="M20,138 Q44,134 60,124 T84,100 Q98,72 114,70 Q134,78 154,106 Q172,134 190,139"/>
-    <path class="curve" d="M20,138 Q46,136 62,128 T86,106 Q100,82 116,80 Q136,86 156,112 Q174,136 190,139"/>
-    <path class="curve" d="M20,138 Q48,137 64,132 T88,112 Q102,92 118,90 Q138,94 158,118 Q176,136 190,139"/>
-    <path class="curve" d="M20,139 Q50,138 66,136 T90,120 Q105,106 120,104 Q140,108 160,126 Q178,138 190,139"/>
-    <text x="4" y="18" fill="rgba(255,255,255,0.2)" font-size="5" font-family="IBM Plex Mono, monospace">200</text>
-    <text x="4" y="75" fill="rgba(255,255,255,0.2)" font-size="5" font-family="IBM Plex Mono, monospace">150</text>
-  </svg>
-  <div class="data-foot">Vₒ= 16 KM/S 1.5 MONTHS &nbsp; Vₒ= 50 KM/S 0.5 MONTHS</div>
-</div></div>
-
-<!-- C2: DATA TABLE (scrolling) -->
-<div class="hi-view v-c2"><div class="hi-s">
-  <div class="data-head">78990855 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10299<br>12590790 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;67800</div>
-  <div class="data-table"><div class="data-table-inner">
-    <div class="row"><span>1140336</span><span>08</span><span>8888</span><span>2.0</span><span>93</span></div>
-    <div class="row"><span>3948200</span><span>49</span><span>0394</span><span>5.9</span><span>03</span></div>
-    <div class="row"><span>0299385</span><span>00</span><span>8273</span><span>.03</span><span>29</span></div>
-    <div class="row"><span>3944930</span><span>22</span><span>0499</span><span>.00</span><span>94</span></div>
-    <div class="row"><span>0000399</span><span>14</span><span>1585</span><span>9.6</span><span>00</span></div>
-    <div class="row"><span>1485722</span><span>94</span><span>8475</span><span>0.5</span><span>63</span></div>
-    <div class="row"><span>9211486</span><span>84</span><span>5867</span><span>5.5</span><span>05</span></div>
-    <div class="row"><span>1485922</span><span>93</span><span>1485</span><span>9.3</span><span>44</span></div>
-    <div class="row"><span>0495827</span><span>75</span><span>9385</span><span>5.2</span><span>40</span></div>
-    <div class="row"><span>8314059</span><span>03</span><span>4859</span><span>.40</span><span>77</span></div>
-    <div class="row"><span>4831900</span><span>39</span><span>0000</span><span>1.4</span><span>38</span></div>
-    <div class="row"><span>7720194</span><span>55</span><span>3291</span><span>8.1</span><span>12</span></div>
-    <div class="row"><span>3058411</span><span>67</span><span>7744</span><span>3.3</span><span>56</span></div>
-    <div class="row"><span>8891003</span><span>41</span><span>2058</span><span>.72</span><span>81</span></div>
-    <div class="row"><span>5520937</span><span>18</span><span>6103</span><span>4.8</span><span>09</span></div>
-    <div class="row"><span>2204815</span><span>36</span><span>9920</span><span>7.1</span><span>47</span></div>
-    <div class="row"><span>6193044</span><span>72</span><span>4417</span><span>.55</span><span>20</span></div>
-    <div class="row"><span>0038592</span><span>09</span><span>1832</span><span>6.4</span><span>33</span></div>
-    <div class="row"><span>4471088</span><span>28</span><span>5509</span><span>2.7</span><span>68</span></div>
-    <div class="row"><span>9305624</span><span>61</span><span>3846</span><span>.19</span><span>52</span></div>
-    <div class="row"><span>1667430</span><span>83</span><span>7201</span><span>8.8</span><span>14</span></div>
-    <div class="row"><span>5849201</span><span>47</span><span>0693</span><span>1.2</span><span>75</span></div>
-    <div class="row"><span>1140336</span><span>08</span><span>8888</span><span>2.0</span><span>93</span></div>
-    <div class="row"><span>3948200</span><span>49</span><span>0394</span><span>5.9</span><span>03</span></div>
-    <div class="row"><span>0299385</span><span>00</span><span>8273</span><span>.03</span><span>29</span></div>
-    <div class="row"><span>3944930</span><span>22</span><span>0499</span><span>.00</span><span>94</span></div>
-    <div class="row"><span>0000399</span><span>14</span><span>1585</span><span>9.6</span><span>00</span></div>
-    <div class="row"><span>1485722</span><span>94</span><span>8475</span><span>0.5</span><span>63</span></div>
-    <div class="row"><span>9211486</span><span>84</span><span>5867</span><span>5.5</span><span>05</span></div>
-    <div class="row"><span>1485922</span><span>93</span><span>1485</span><span>9.3</span><span>44</span></div>
-    <div class="row"><span>0495827</span><span>75</span><span>9385</span><span>5.2</span><span>40</span></div>
-    <div class="row"><span>8314059</span><span>03</span><span>4859</span><span>.40</span><span>77</span></div>
-    <div class="row"><span>4831900</span><span>39</span><span>0000</span><span>1.4</span><span>38</span></div>
-    <div class="row"><span>7720194</span><span>55</span><span>3291</span><span>8.1</span><span>12</span></div>
-  </div></div>
-  <div class="data-foot">ESM(300+)<br>8I5I - 994; IMP(2)</div>
-</div></div>
-
-<!-- C5: DECAY GRAPH -->
-<div class="hi-view v-c5"><div class="hi-s">
-  <div class="gh">NEUT: ROMD.4.035(03)s<br>REL:COR.07C.4438</div>
-  <div class="data-col">18 2 <span class="val">91322409</span><br>19 3 <span class="val">05602049</span><br>20 1 <span class="val">39513007</span><br>21 2 <span class="val">35211167</span></div>
-  <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <line class="rg" x1="15" y1="15" x2="15" y2="140"/><line class="rg" x1="15" y1="140" x2="140" y2="140"/>
-    <line class="rg" x1="15" y1="50" x2="140" y2="50"/><line class="rg" x1="15" y1="95" x2="140" y2="95"/>
-    <line class="rg" x1="50" y1="15" x2="50" y2="140"/><line class="rg" x1="90" y1="15" x2="90" y2="140"/>
-    <path class="decay-main" d="M18,18 C30,20 40,38 55,62 C70,90 85,115 100,128 C115,136 130,139 140,140"/>
-    <path class="decay-trail" d="M18,26 C30,30 42,50 58,75 C72,98 88,120 105,132 C118,138 132,140 140,141"/>
-    <path class="decay-trail" d="M18,34 C32,40 45,58 62,84 C76,106 92,125 108,135 C120,140 133,141 140,141"/>
-    <path class="decay-trail" d="M18,42 C34,50 48,68 65,92 C80,114 95,130 112,138 C124,141 135,142 140,142"/>
-    <path class="decay-trail" d="M18,50 C36,58 52,76 68,100 C84,120 98,134 115,140 C126,142 136,142 140,142"/>
-    <path class="decay-trail" d="M18,58 C38,66 55,82 72,106 C86,124 100,136 118,141 C128,142 137,142 140,143"/>
-  </svg>
-  <div class="progress-bars">
-    <div class="pbar"><div class="pbar-fill"></div></div>
-    <div class="pbar"><div class="pbar-fill"></div></div>
-    <div class="pbar"><div class="pbar-fill"></div></div>
-    <div class="pbar"><div class="pbar-fill"></div></div>
-    <div class="pbar"><div class="pbar-fill"></div></div>
-  </div>
-</div></div>
-
-<!-- C6: CHK PROG -->
-<div class="hi-view v-c6"><div class="hi-s">
-  <div class="chk-title">CHK. PROG. 601</div>
-  <div class="chk-data"><span class="tw-line">LG+448/RD(-.06)/3IK</span><span class="tw-line">COS4; TAN3; (485G)(I184)</span><span class="tw-line">ST615/RG2(+.05)</span></div>
-  <div class="chk-foot"><span class="tw-line">IO/POS</span><span class="tw-line">82:946:220</span><span class="tw-line">IO/NEG</span><span class="tw-line">96:484:404</span></div>
-</div></div>
-<!-- C3: HISTOGRAM -->
-<div class="hi-view v-c3"><div class="hi-s">
-<div class="c3-sub">(225) FREQ.DIST // MODE:4B // SAMP:2048</div>
-<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <line class="hgrid" x1="30" y1="30" x2="175" y2="30"/><line class="hgrid" x1="30" y1="55" x2="175" y2="55"/>
-  <line class="hgrid" x1="30" y1="80" x2="175" y2="80"/><line class="hgrid" x1="30" y1="105" x2="175" y2="105"/>
-  <line class="hgrid" x1="30" y1="130" x2="175" y2="130"/><line class="hgrid" x1="30" y1="148" x2="175" y2="148"/>
-  <line class="vgrid" x1="50" y1="25" x2="50" y2="150"/><line class="vgrid" x1="70" y1="25" x2="70" y2="150"/>
-  <line class="vgrid" x1="90" y1="25" x2="90" y2="150"/><line class="vgrid" x1="110" y1="25" x2="110" y2="150"/>
-  <line class="vgrid" x1="130" y1="25" x2="130" y2="150"/><line class="vgrid" x1="150" y1="25" x2="150" y2="150"/>
-  <line class="vgrid" x1="170" y1="25" x2="170" y2="150"/>
-  <g id="c3-bars">
-    <rect class="bar" x="32" width="8"/><rect class="bar" x="41" width="8"/>
-    <rect class="bar" x="50" width="8"/><rect class="bar" x="59" width="8"/>
-    <rect class="bar" x="68" width="8"/><rect class="bar" x="77" width="8"/>
-    <rect class="bar" x="86" width="8"/><rect class="bar" x="95" width="8"/>
-    <rect class="bar" x="104" width="8"/><rect class="bar" x="113" width="8"/>
-    <rect class="bar" x="122" width="8"/><rect class="bar" x="131" width="8"/>
-    <rect class="bar" x="140" width="8"/><rect class="bar" x="149" width="8"/>
-    <rect class="bar" x="158" width="8"/><rect class="bar" x="167" width="8"/>
-  </g>
-  <text x="36" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">04</text>
-  <text x="45" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">12</text>
-  <text x="54" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">19</text>
-  <text x="63" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">27</text>
-  <text x="72" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">34</text>
-  <text x="81" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">42</text>
-  <text x="90" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">49</text>
-  <text x="99" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">57</text>
-  <text x="108" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">64</text>
-  <text x="117" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">72</text>
-  <text x="126" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">79</text>
-  <text x="135" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">87</text>
-  <text x="144" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">94</text>
-  <text x="153" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">A2</text>
-  <text x="162" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">B0</text>
-  <text x="171" y="156" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5" text-anchor="middle">C8</text>
-  <text x="22" y="164" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5">N=2048  μ=68.4  σ=21.7  PEAK:BIN.04</text>
-  <text x="22" y="172" class="hi-svglbl" fill="rgba(220,210,240,0.3)" font-size="3.5">POS:REJ:(68,45,95;CDE+); CONT;PROCESS;;</text>
-</svg></div></div>
-
-<!-- C4: TARGETING RETICLE -->
-<div class="hi-view v-c4"><div class="hi-s"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <mask id="c4mask">
-      <rect width="200" height="200" fill="white"/>
-      <circle cx="100" cy="100" r="24" fill="black"/>
-    </mask>
-    <filter id="c4glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <circle class="t-ring" cx="100" cy="100" r="90"/>
-  <circle class="t-ring-sm" cx="100" cy="100" r="28"/>
-  <g mask="url(#c4mask)">
-    <line class="t-solid" x1="100" y1="5" x2="100" y2="195"/>
-    <line class="t-solid" x1="5" y1="100" x2="195" y2="100"/>
-    <line class="t-solid" x1="32" y1="32" x2="168" y2="168"/>
-    <line class="t-solid" x1="168" y1="32" x2="32" y2="168"/>
-    <line class="t-dashed" x1="63" y1="15" x2="137" y2="185"/>
-    <line class="t-dashed" x1="185" y1="63" x2="15" y2="137"/>
-    <line class="t-dashed" x1="137" y1="15" x2="63" y2="185"/>
-    <line class="t-dashed" x1="15" y1="63" x2="185" y2="137"/>
-  </g>
-  <g mask="url(#c4mask)">
-    <g class="xhair-echo xhair-echo-3">
-      <line class="echo-cross" x1="8" y1="100" x2="192" y2="100"/><line class="echo-cross" x1="100" y1="8" x2="100" y2="192"/>
-    </g>
-    <g class="xhair-echo xhair-echo-2">
-      <line class="echo-cross" x1="8" y1="100" x2="192" y2="100"/><line class="echo-cross" x1="100" y1="8" x2="100" y2="192"/>
-    </g>
-    <g class="xhair-echo xhair-echo-1">
-      <line class="echo-cross" x1="8" y1="100" x2="192" y2="100"/><line class="echo-cross" x1="100" y1="8" x2="100" y2="192"/>
-    </g>
-    <g class="xhair-group">
-      <line class="t-cross" x1="8" y1="100" x2="192" y2="100"/><line class="t-cross" x1="100" y1="8" x2="100" y2="192"/>
-    </g>
-  </g>
-  <circle cx="100" cy="100" r="4" fill="rgba(240,230,220,0.95)" filter="url(#c4glow)"/>
-</svg></div></div>
-
-<!-- C7: CELESTIAL NAV (2 cycling views) -->
-<div class="hi-view v-c7"><div class="hi-s">
-  <svg class="c7v" id="c7v1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-    <clipPath id="c7-clip"><rect width="300" height="300" rx="14"/></clipPath>
-    <g clip-path="url(#c7-clip)">
-      <rect class="c7bg" width="300" height="300"/>
-      <g transform="translate(0,-40)">
-        <circle cx="150" cy="0" r="80" class="c7gc"/>
-        <circle cx="150" cy="0" r="140" class="c7gc"/>
-        <circle cx="150" cy="0" r="200" class="c7gc"/>
-        <circle cx="150" cy="0" r="270" class="c7gc"/>
-        <circle cx="150" cy="0" r="340" class="c7gc"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(-65 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(-45 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(-25 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(-5 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(15 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(35 150 0)"/>
-        <line x1="150" y1="0" x2="150" y2="450" class="c7gl" transform="rotate(55 150 0)"/>
-        <g class="c7fi c7d1">
-          <g transform="rotate(35 150 0)">
-            <line x1="150" y1="120" x2="150" y2="180" stroke="#5a6b9c" stroke-width="0.75" opacity="0.6"/>
-            <circle cx="150" cy="120" r="1.5" class="c7df"/>
-            <circle cx="150" cy="180" r="1.5" class="c7df"/>
-            <text x="146" y="150" class="c7tl" transform="rotate(-90 146 150)" text-anchor="middle">SPACE</text>
-          </g>
-          <circle cx="150" cy="110" r="1.5" class="c7df" transform="rotate(-10 150 0)"/>
-          <circle cx="150" cy="300" r="1.5" class="c7df" transform="rotate(20 150 0)"/>
-          <circle cx="150" cy="310" r="1.5" class="c7df" transform="rotate(-20 150 0)"/>
-        </g>
-        <path class="c7cl" d="M -26.1,123.3 L 26.7,176.1 L 94.4,207.7 L 132.6,199.2 L 144.4,159.9 L 147.2,79.9 M 132.6,199.2 L 168.7,214.2 L 240.9,194.8"/>
-        <g class="c7fi c7d2">
-          <circle cx="-26.1" cy="123.3" r="2.5" class="c7db"/>
-          <circle cx="26.7" cy="176.1" r="2.5" class="c7db"/>
-          <circle cx="94.4" cy="207.7" r="2.5" class="c7db"/>
-          <circle cx="132.6" cy="199.2" r="2.5" class="c7db"/>
-          <circle cx="144.4" cy="159.9" r="2.5" class="c7db"/>
-          <circle cx="147.2" cy="79.9" r="2.5" class="c7db"/>
-          <circle cx="168.7" cy="214.2" r="2.5" class="c7db"/>
-          <circle cx="240.9" cy="194.8" r="2.5" class="c7db"/>
-        </g>
-        <g class="c7fi c7d3">
-          <text x="150" y="235" transform="rotate(-55 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">3</text>
-          <text x="150" y="235" transform="rotate(-35 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">J<tspan dy="6" class="c7ts">1</tspan></text>
-          <text x="150" y="235" transform="rotate(-15 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">B</text>
-          <text x="150" y="235" transform="rotate(5 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">T<tspan dy="6" class="c7ts">2</tspan></text>
-          <text x="150" y="235" transform="rotate(25 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">N</text>
-          <text x="150" y="170" transform="rotate(5 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">D</text>
-          <text x="150" y="110" transform="rotate(5 150 0)" class="c7tm" text-anchor="middle" dominant-baseline="central">A</text>
-          <text x="150" y="193" transform="rotate(-5 150 0)" class="c7ts" text-anchor="middle" dominant-baseline="central">5</text>
-        </g>
-      </g>
-    </g>
-  </svg>
-  <svg class="c7v c7hidden" id="c7v2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
-    <clipPath id="c7-clip2"><rect width="300" height="300" rx="14"/></clipPath>
-    <g clip-path="url(#c7-clip2)">
-      <rect class="c7bg" width="300" height="300"/>
-      <text x="15" y="25" class="c7nh c7glow">STELLAR NAVIGATION</text>
-      <text x="15" y="35" class="c7tl">STATUS: TRACKING | FIX: CONFIRMED</text>
-      <g transform="translate(150,160)">
-        <g class="c7ng">
-          <circle cx="0" cy="0" r="40"/><circle cx="0" cy="0" r="80"/><circle cx="0" cy="0" r="120"/>
-          <line x1="0" y1="-120" x2="0" y2="120"/><line x1="-120" y1="0" x2="120" y2="0"/>
-          <line x1="-85" y1="-85" x2="85" y2="85"/><line x1="-85" y1="85" x2="85" y2="-85"/>
-        </g>
-        <clipPath id="c7-navclip"><circle cx="0" cy="0" r="120"/></clipPath>
-        <g clip-path="url(#c7-navclip)">
-          <g class="c7scan"><path d="M 0,0 L 0,-200 A 200,200 0 0,1 141.4,-141.4 Z" class="c7sh"/></g>
-        </g>
-        <g class="c7cd">
-          <line x1="0" y1="0" x2="-40" y2="-50"/><line x1="0" y1="0" x2="30" y2="-70"/>
-          <line x1="0" y1="0" x2="80" y2="-20"/><line x1="0" y1="0" x2="-25" y2="40"/>
-          <line x1="-40" y1="-50" x2="-60" y2="50"/><line x1="80" y1="-20" x2="50" y2="80"/>
-          <line x1="-60" y1="50" x2="-90" y2="75"/><line x1="-25" y1="40" x2="50" y2="80"/>
-        </g>
-        <circle cx="0" cy="0" r="6" fill="#060b1c" stroke="#a5bdfc" stroke-width="2"/>
-        <circle cx="0" cy="0" r="2" class="c7db"/>
-        <text x="10" y="0" class="c7nl">OBJ-6804<tspan x="10" dy="7">Z:34.4LY</tspan></text>
-        <circle cx="-40" cy="-50" r="3" class="c7db"/>
-        <text x="-45" y="-55" class="c7nl" text-anchor="end">OBJ-6792<tspan x="-45" dy="7">Z:40.2LY</tspan></text>
-        <circle cx="30" cy="-70" r="3" class="c7db"/>
-        <text x="35" y="-70" class="c7nl">OBJ-9959<tspan x="35" dy="7">Z:66.4LY</tspan></text>
-        <circle cx="80" cy="-20" r="3" class="c7db"/>
-        <text x="85" y="-20" class="c7nl">OBJ-5710<tspan x="85" dy="7">Z:1.2LY</tspan></text>
-        <circle cx="50" cy="80" r="3" class="c7db"/>
-        <text x="55" y="80" class="c7nl c7glow">OBJ-5791<tspan x="55" dy="7">Z:76.2LY</tspan></text>
-        <circle cx="-25" cy="40" r="3" class="c7db"/>
-        <text x="-30" y="45" class="c7nl" text-anchor="end">OBJ-1988<tspan x="-30" dy="7">Z:17.3LY</tspan></text>
-        <circle cx="-60" cy="50" r="3" class="c7db"/>
-        <text x="-65" y="55" class="c7nl" text-anchor="end">OBJ-9753<tspan x="-65" dy="7">Z:51.3LY</tspan></text>
-        <circle cx="-90" cy="75" r="3" class="c7db"/>
-        <text x="-95" y="80" class="c7nl" text-anchor="end">OBJ-2497<tspan x="-95" dy="7">Z:6.1LY</tspan></text>
-      </g>
-    </g>
-  </svg>
-</div></div>
-
-<!-- C8a: WIREFRAME SPACECRAFT (POD state) -->
-<div class="hi-view v-c8a"><div class="hi-s">
-  <svg class="schematic c8-view" id="c8-pod" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <circle class="wf-stroke" cx="100" cy="78" r="48"/>
-    <ellipse class="wf-thin" cx="100" cy="78" rx="48" ry="18"/>
-    <ellipse class="wf-thin" cx="100" cy="58" rx="40" ry="10"/>
-    <line class="wf-thin" x1="100" y1="30" x2="100" y2="126"/>
-    <rect class="wf-stroke" x="86" y="58" width="28" height="22" rx="3"/>
-    <rect class="wf-thin" x="89" y="61" width="22" height="16" rx="2"/>
-    <line class="wf-thin" x1="100" y1="58" x2="100" y2="80"/>
-    <line class="wf-thin" x1="86" y1="69" x2="114" y2="69"/>
-    <rect class="wf-thin" x="93" y="63" width="6" height="4" rx="1"/>
-    <line class="wf-stroke" x1="100" y1="30" x2="100" y2="10"/>
-    <line class="wf-thin" x1="96" y1="14" x2="104" y2="14"/>
-    <polygon class="wf-stroke" points="94,30 100,16 106,30" fill="none"/>
-    <line class="wf-thin" x1="94" y1="24" x2="106" y2="24"/>
-    <line class="wf-thin" x1="72" y1="45" x2="82" y2="35"/>
-    <line class="wf-thin" x1="128" y1="45" x2="118" y2="35"/>
-    <path class="wf-thin" d="M60,65 Q80,50 100,48 Q120,50 140,65"/>
-    <path class="wf-thin" d="M55,85 Q75,100 100,105 Q125,100 145,85"/>
-    <line class="wf-stroke" x1="64" y1="54" x2="52" y2="78"/>
-    <line class="wf-stroke" x1="136" y1="54" x2="148" y2="78"/>
-    <path class="wf-stroke" d="M64,54 Q100,43 136,54" fill="none"/>
-    <line class="wf-thin" x1="70" y1="56" x2="58" y2="72"/>
-    <line class="wf-thin" x1="130" y1="56" x2="142" y2="72"/>
-    <line class="wf-stroke" x1="52" y1="78" x2="38" y2="82"/>
-    <line class="wf-stroke" x1="148" y1="78" x2="162" y2="82"/>
-    <circle class="wf-thin" cx="52" cy="78" r="3"/>
-    <circle class="wf-thin" cx="148" cy="78" r="3"/>
-    <line class="wf-stroke" x1="38" y1="82" x2="28" y2="88"/>
-    <line class="wf-stroke" x1="162" y1="82" x2="172" y2="88"/>
-    <circle class="wf-stroke" cx="22" cy="92" r="12"/>
-    <circle class="wf-thin" cx="22" cy="92" r="8"/>
-    <line class="wf-thin" x1="10" y1="92" x2="34" y2="92"/>
-    <line class="wf-thin" x1="22" y1="80" x2="22" y2="104"/>
-    <circle class="wf-dot" cx="22" cy="92" r="2"/>
-    <line class="wf-thin" x1="14" y1="84" x2="30" y2="100"/>
-    <line class="wf-thin" x1="30" y1="84" x2="14" y2="100"/>
-    <circle class="wf-stroke" cx="178" cy="92" r="12"/>
-    <circle class="wf-thin" cx="178" cy="92" r="8"/>
-    <line class="wf-thin" x1="166" y1="92" x2="190" y2="92"/>
-    <line class="wf-thin" x1="178" y1="80" x2="178" y2="104"/>
-    <circle class="wf-dot" cx="178" cy="92" r="2"/>
-    <line class="wf-thin" x1="170" y1="84" x2="186" y2="100"/>
-    <line class="wf-thin" x1="186" y1="84" x2="170" y2="100"/>
-    <line class="wf-stroke" x1="86" y1="126" x2="86" y2="152"/>
-    <line class="wf-stroke" x1="114" y1="126" x2="114" y2="152"/>
-    <line class="wf-thin" x1="86" y1="132" x2="114" y2="132"/>
-    <line class="wf-thin" x1="86" y1="140" x2="114" y2="140"/>
-    <line class="wf-thin" x1="86" y1="148" x2="114" y2="148"/>
-    <line class="wf-thin" x1="100" y1="126" x2="100" y2="152"/>
-    <line class="wf-thin" x1="82" y1="128" x2="86" y2="126"/>
-    <line class="wf-thin" x1="118" y1="128" x2="114" y2="126"/>
-    <line class="wf-thin" x1="82" y1="128" x2="82" y2="150"/>
-    <line class="wf-thin" x1="118" y1="128" x2="118" y2="150"/>
-    <rect class="wf-stroke" x="78" y="152" width="44" height="12" rx="2"/>
-    <line class="wf-thin" x1="78" y1="158" x2="122" y2="158"/>
-    <line class="wf-thin" x1="90" y1="152" x2="90" y2="164"/>
-    <line class="wf-thin" x1="110" y1="152" x2="110" y2="164"/>
-    <rect class="wf-stroke" x="72" y="164" width="56" height="8" rx="2"/>
-    <line class="wf-thin" x1="72" y1="168" x2="128" y2="168"/>
-    <line class="wf-thin" x1="76" y1="172" x2="72" y2="178"/>
-    <line class="wf-thin" x1="124" y1="172" x2="128" y2="178"/>
-    <line class="wf-thin" x1="100" y1="172" x2="100" y2="178"/>
-    <ellipse class="wf-thin" cx="100" cy="126" rx="12" ry="3"/>
-  </svg>
-  <div class="c8-globe">
-    <div class="c8-orb">
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-orb-center"></div>
-    </div>
-  </div>
-  <div class="c8-meta">
-    <span class="tw-line">AE-35 UNIT</span>
-    <span class="tw-line">FAULT DETECTED</span>
-    <span class="tw-line">FAIL PROB: 100%</span>
-    <span class="tw-line">EST: 72 HOURS</span>
-  </div>
-</div></div>
-
-<!-- C8b: WIREFRAME SPACECRAFT (DISCOVERY state) -->
-<div class="hi-view v-c8b"><div class="hi-s">
-  <svg class="schematic c8-view" id="c8-discovery" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <g class="craft-group">
-      <ellipse class="wf-stroke" cx="45" cy="100" rx="22" ry="28"/>
-      <ellipse class="wf-thin" cx="45" cy="100" rx="15" ry="20"/>
-      <ellipse class="wf-thin" cx="45" cy="100" rx="8" ry="11"/>
-      <circle class="wf-dot" cx="45" cy="100" r="2"/>
-      <line class="wf-thin" x1="23" y1="100" x2="67" y2="100"/><line class="wf-thin" x1="45" y1="72" x2="45" y2="128"/>
-      <line class="wf-stroke" x1="67" y1="100" x2="155" y2="100"/>
-      <line class="wf-thin" x1="67" y1="100" x2="80" y2="88"/><line class="wf-thin" x1="80" y1="88" x2="145" y2="88"/><line class="wf-thin" x1="145" y1="88" x2="155" y2="100"/>
-      <line class="wf-thin" x1="67" y1="100" x2="80" y2="112"/><line class="wf-thin" x1="80" y1="112" x2="145" y2="112"/><line class="wf-thin" x1="145" y1="112" x2="155" y2="100"/>
-      <line class="wf-thin" x1="90" y1="88" x2="90" y2="112"/><line class="wf-thin" x1="110" y1="88" x2="110" y2="112"/><line class="wf-thin" x1="130" y1="88" x2="130" y2="112"/>
-      <ellipse class="wf-stroke" cx="165" cy="100" rx="16" ry="20"/>
-      <ellipse class="wf-thin" cx="165" cy="100" rx="10" ry="14"/>
-      <line class="wf-thin" x1="149" y1="100" x2="181" y2="100"/><line class="wf-thin" x1="165" y1="80" x2="165" y2="120"/>
-      <line class="wf-stroke" x1="165" y1="80" x2="175" y2="62"/><line class="wf-stroke" x1="165" y1="80" x2="155" y2="62"/>
-      <line class="wf-stroke" x1="165" y1="120" x2="175" y2="138"/><line class="wf-stroke" x1="165" y1="120" x2="155" y2="138"/>
-      <circle class="wf-stroke" cx="175" cy="58" r="6"/><circle class="wf-stroke" cx="155" cy="58" r="6"/>
-      <circle class="wf-stroke" cx="175" cy="142" r="6"/><circle class="wf-stroke" cx="155" cy="142" r="6"/>
-      <circle class="wf-dot" cx="175" cy="58" r="1.5"/><circle class="wf-dot" cx="155" cy="58" r="1.5"/>
-      <circle class="wf-dot" cx="175" cy="142" r="1.5"/><circle class="wf-dot" cx="155" cy="142" r="1.5"/>
-      <path class="wf-trace" d="M23,100 Q 45,72 67,100 L155,100 Q165,80 175,62"/>
-    </g>
-    <line class="accent-cross" x1="0" y1="100" x2="200" y2="100"/><line class="accent-cross" x1="100" y1="0" x2="100" y2="200"/>
-  </svg>
-  <div class="c8-globe">
-    <div class="c8-orb">
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-ring"></div>
-      <div class="c8-orb-center"></div>
-    </div>
-  </div>
-  <div class="c8-meta-bl">
-    <span class="tw-line">INT;REL;(CODE)3.5.71</span>
-    <span class="tw-line">AREA/AUX;NEUT-FLUX;</span>
-  </div>
-</div></div>
-
-<!-- New Tiles: v-hib, v-gde, v-veh, v-nuc, v-dmg, v-cnt -->
-
-<!-- v-hib: HIB — teal -->
-<div class="hi-view v-hib"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">STA: 35-05</p>
-    <div class="tile-big">HIB</div>
-  </div>
-</div></div>
-
-<!-- v-gde: GDE — blue -->
-<div class="hi-view v-gde"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">LIF: 13-AG</p>
-    <div class="tile-big">GDE</div>
-  </div>
-</div></div>
-
-<!-- v-veh: VEH — light blue -->
-<div class="hi-view v-veh"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">LIN: 86-QW</p>
-    <div class="tile-big">VEH</div>
-  </div>
-</div></div>
-
-<!-- v-nuc: NUC — navy -->
-<div class="hi-view v-nuc"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">AQS: 54-VN</p>
-    <div class="tile-big">NUC</div>
-  </div>
-</div></div>
-
-<!-- v-dmg: DMG — red -->
-<div class="hi-view v-dmg"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">RTE: 39-87</p>
-    <div class="tile-big">DMG</div>
-  </div>
-</div></div>
-
-<!-- v-cnt: CNT — green -->
-<div class="hi-view v-cnt"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">VER: 80-KJ</p>
-    <div class="tile-big">CNT</div>
-  </div>
-</div></div>
-
-<!-- v-flx: FLX — blue -->
-<div class="hi-view v-flx"><div class="hi-s tile-solid">
-  <div class="tile-inner">
-    <p class="tile-pmt">ATA: 48-12</p>
-    <div class="tile-big">FLX</div>
-  </div>
-</div></div>
-
-<!-- ═══ Extra hero views (v-bell, v-prism, v-rem, v-expd, v-defi, v-cba) ═══ -->
-
-<!-- v-bell: Bell curve data visualization -->
-<div class="hi-view v-bell"><div class="hi-s">
-  <div class="v-bell-grid"></div>
-  <svg class="v-bell-canvas" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid slice">
-    <!-- Back-to-front contour curves for 3D perspective bell -->
-    <path class="v-bell-curve" d="M 60 200 Q 120 190 180 200" fill="none" stroke="rgba(200, 150, 220, 0.25)" stroke-width="0.8" stroke-dasharray="120"/>
-    <path class="v-bell-curve" d="M 55 170 Q 120 155 185 170" fill="none" stroke="rgba(200, 150, 220, 0.35)" stroke-width="0.8" stroke-dasharray="130"/>
-    <path class="v-bell-curve" d="M 48 140 Q 120 115 192 140" fill="none" stroke="rgba(200, 150, 220, 0.45)" stroke-width="0.9" stroke-dasharray="144"/>
-    <path class="v-bell-curve" d="M 42 110 Q 120 75 198 110" fill="none" stroke="rgba(200, 150, 220, 0.55)" stroke-width="1" stroke-dasharray="156"/>
-    <path class="v-bell-curve" d="M 38 80 Q 120 35 202 80" fill="none" stroke="rgba(200, 150, 220, 0.65)" stroke-width="1.1" stroke-dasharray="164"/>
-    <path class="v-bell-curve" d="M 36 50 Q 120 10 204 50" fill="none" stroke="rgba(220, 170, 240, 0.75)" stroke-width="1.2" stroke-dasharray="168"/>
-    <path class="v-bell-curve" d="M 38 30 Q 120 0 202 30" fill="none" stroke="rgba(230, 190, 250, 0.8)" stroke-width="1.3" stroke-dasharray="164"/>
-    <path class="v-bell-curve" d="M 40 20 Q 120 -10 200 20" fill="none" stroke="rgba(240, 200, 255, 0.85)" stroke-width="1.4" stroke-dasharray="160"/>
-
-    <!-- Data point markers -->
-    <circle class="v-bell-point" cx="100" cy="95" r="1" fill="rgba(220, 180, 255, 0.9)" stroke="rgba(240, 200, 255, 0.8)" stroke-width="0.4"/>
-    <circle class="v-bell-point" cx="140" cy="70" r="1" fill="rgba(220, 180, 255, 0.9)" stroke="rgba(240, 200, 255, 0.8)" stroke-width="0.4"/>
-    <circle class="v-bell-point" cx="120" cy="45" r="1" fill="rgba(220, 180, 255, 0.9)" stroke="rgba(240, 200, 255, 0.8)" stroke-width="0.4"/>
-  </svg>
-
-  <div class="v-bell-axis-labels">
-    <div class="v-bell-label">.3666</div>
-    <div class="v-bell-label">.2956</div>
-    <div class="v-bell-label">.1450</div>
-    <div class="v-bell-label">.0474</div>
-    <div class="v-bell-label">.0020</div>
-  </div>
-
-  <div class="v-bell-readout">
-    <div class="v-bell-readout-item">
-      <div class="v-bell-readout-label">IO/POS</div>
-      <div class="v-bell-readout-value">82:946:220</div>
-      <div class="v-bell-readout-label">.0433</div>
-    </div>
-    <div class="v-bell-readout-item">
-      <div class="v-bell-readout-label">IO/NFG</div>
-      <div class="v-bell-readout-value">96:486:404</div>
-      <div class="v-bell-readout-label">.0020</div>
-    </div>
-  </div>
-</div></div>
-
-<!-- v-prism: CRT-style mission data display -->
-<div class="hi-view v-prism"><div class="hi-s">
-  <div class="vp-header">
-    <span class="vp-header-line">PROG: CON04;B2.040RT/SEC²(524857)</span>
-    <span class="vp-header-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D6/485</span>
-    <span class="vp-header-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RL/201</span>
-  </div>
-  <div class="vp-data-section">
-    <div class="vp-row"><span class="vp-label">SEC 1</span> <span class="vp-dots">————————————</span><span class="vp-value">4905.3100</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;2</span> <span class="vp-dots">————————————</span><span class="vp-value">3048.0002</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;3</span> <span class="vp-dots">————————————</span><span class="vp-value">9373.2020</span></div>
-    <div class="vp-row"><span class="vp-label">FIG A</span> <span class="vp-dots">—————</span><span class="vp-value">48566</span><span class="vp-extra">314</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;B</span> <span class="vp-dots">—————</span><span class="vp-value">13782</span><span class="vp-extra">000</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;C</span> <span class="vp-dots">—————</span><span class="vp-value">05894</span><span class="vp-extra">841</span></div>
-    <div class="vp-row"><span class="vp-label">SEC 4</span> <span class="vp-dots">——————————</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;5</span> <span class="vp-dots">——————————</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;6</span> <span class="vp-dots">——————————</span></div>
-    <div class="vp-row"><span class="vp-label">FIG D</span> <span class="vp-dots">—————</span><span class="vp-value">R/L</span><span class="vp-extra">10</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;E</span> <span class="vp-dots">—————</span><span class="vp-value">L/C</span><span class="vp-extra">48</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;F</span> <span class="vp-dots">—————</span><span class="vp-value">A/R</span><span class="vp-extra">37</span></div>
-    <div class="vp-row"><span class="vp-label">SEC 7</span> <span class="vp-dots">——————————————</span><span class="vp-value">3845</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;8</span> <span class="vp-dots">——————————————</span><span class="vp-value">3189</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;9</span> <span class="vp-dots">——————————————</span><span class="vp-value">0836</span></div>
-    <div class="vp-row"><span class="vp-label">FIG G</span> <span class="vp-dots">—————————</span><span class="vp-value">31082</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;H</span> <span class="vp-dots">—————————</span><span class="vp-value">12900</span></div>
-    <div class="vp-row"><span class="vp-label">&nbsp;&nbsp;&nbsp;&nbsp;I</span> <span class="vp-dots">—————————</span><span class="vp-value">82194</span></div>
-  </div>
-</div></div>
-
-<!-- v-rem: Data table with chart -->
-<div class="hi-view v-rem"><div class="hi-s">
-  <div class="chart-container">
-    <svg viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
-      <!-- Vertical gridlines -->
-      <line class="grid-line" x1="8" y1="5" x2="8" y2="45" />
-      <line class="grid-line" x1="18" y1="5" x2="18" y2="45" />
-      <line class="grid-line" x1="28" y1="5" x2="28" y2="45" />
-      <line class="grid-line" x1="38" y1="5" x2="38" y2="45" />
-      <line class="grid-line" x1="48" y1="5" x2="48" y2="45" />
-      <line class="grid-line" x1="58" y1="5" x2="58" y2="45" />
-      <line class="grid-line" x1="68" y1="5" x2="68" y2="45" />
-      <line class="grid-line" x1="78" y1="5" x2="78" y2="45" />
-      <line class="grid-line" x1="88" y1="5" x2="88" y2="45" />
-
-      <!-- Horizontal gridlines -->
-      <line class="grid-line" x1="5" y1="10" x2="95" y2="10" />
-      <line class="grid-line" x1="5" y1="20" x2="95" y2="20" />
-      <line class="grid-line" x1="5" y1="30" x2="95" y2="30" />
-      <line class="grid-line" x1="5" y1="40" x2="95" y2="40" />
-
-      <!-- Y-axis labels -->
-      <text class="axis-label" x="2" y="47">1</text>
-      <text class="axis-label" x="2" y="37">3</text>
-      <text class="axis-label" x="2" y="27">5</text>
-      <text class="axis-label" x="2" y="17">7</text>
-      <text class="axis-label" x="2" y="7">9</text>
-
-      <!-- X-axis labels -->
-      <text class="axis-label" x="6" y="48">1</text>
-      <text class="axis-label" x="26" y="48">4</text>
-      <text class="axis-label" x="46" y="48">8</text>
-      <text class="axis-label" x="66" y="48">12</text>
-      <text class="axis-label" x="84" y="48">16</text>
-
-      <!-- Trace 1: dipping down -->
-      <path class="data-line trace-1" d="M 8 15 Q 18 16 28 18 T 48 28 T 68 22 T 88 12" />
-
-      <!-- Trace 2: oscillating -->
-      <path class="data-line trace-2" d="M 8 25 Q 18 22 28 24 T 48 20 T 68 26 T 88 24" />
-    </svg>
-  </div>
-
-  <div class="data-block">
-    <div class="data-row">
-      <span class="data-label">REM2C(.)/50664</span>
-      <span class="data-dots">.........</span>
-      <span class="data-value">485(425)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.IRM(.)</span>
-      <span class="data-dots">.....................</span>
-      <span class="data-value">190(656)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.GDE(.)</span>
-      <span class="data-dots">.....................</span>
-      <span class="data-value">156(289)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.POS(.)</span>
-      <span class="data-dots">.....................</span>
-      <span class="data-value">975(I+2)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.572C(.)</span>
-      <span class="data-dots">..................</span>
-      <span class="data-value">610(687)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.065(.)</span>
-      <span class="data-dots">.....................</span>
-      <span class="data-value">572(650)</span>
-    </div>
-    <div class="data-row">
-      <span class="data-label">.910(.)</span>
-      <span class="data-dots">.....................</span>
-      <span class="data-value">065(247)</span>
-    </div>
-  </div>
-</div></div>
-
-<!-- v-expd: Exponential decay curves -->
-<div class="hi-view v-expd"><div class="hi-s">
-  <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
-    <!-- Y-axis grid lines and labels -->
-    <line class="v-expd-grid-line" x1="30" y1="146" x2="190" y2="146" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="146">80</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="130" x2="190" y2="130" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="130">70</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="114" x2="190" y2="114" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="114">60</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="98" x2="190" y2="98" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="98">50</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="82" x2="190" y2="82" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="82">40</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="66" x2="190" y2="66" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="66">30</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="50" x2="190" y2="50" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="50">20</text>
-
-    <line class="v-expd-grid-line" x1="30" y1="34" x2="190" y2="34" />
-    <text class="v-expd-axis-label v-expd-y-label" x="26" y="34">10</text>
-
-    <!-- X-axis grid lines and labels -->
-    <line class="v-expd-grid-line" x1="40" y1="20" x2="40" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="40" y="155">10⁻⁷</text>
-
-    <line class="v-expd-grid-line" x1="70" y1="20" x2="70" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="70" y="155">10⁻⁵</text>
-
-    <line class="v-expd-grid-line" x1="100" y1="20" x2="100" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="100" y="155">10⁻³</text>
-
-    <line class="v-expd-grid-line" x1="130" y1="20" x2="130" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="130" y="155">10⁻¹</text>
-
-    <line class="v-expd-grid-line" x1="160" y1="20" x2="160" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="160" y="155">10¹</text>
-
-    <line class="v-expd-grid-line" x1="190" y1="20" x2="190" y2="150" />
-    <text class="v-expd-axis-label v-expd-x-label" x="190" y="155">10³</text>
-
-    <!-- Exponential decay curves (6 curves with different decay rates) -->
-    <path class="v-expd-curve" d="M 35,22 Q 50,28 70,42 Q 95,65 130,120 Q 150,138 190,150" />
-    <path class="v-expd-curve" d="M 35,28 Q 52,35 75,55 Q 105,90 140,140 Q 160,145 190,150" />
-    <path class="v-expd-curve" d="M 35,35 Q 55,42 80,65 Q 110,105 145,142 Q 165,147 190,150" />
-    <path class="v-expd-curve" d="M 35,42 Q 58,48 85,72 Q 115,115 150,144 Q 170,148 190,150" />
-    <path class="v-expd-curve" d="M 35,50 Q 62,55 92,80 Q 120,125 155,146 Q 175,149 190,150" />
-    <path class="v-expd-curve" d="M 35,60 Q 68,62 100,88 Q 128,135 160,148 Q 180,150 190,150" />
-
-    <!-- Legend box (top-right) -->
-    <g transform="translate(155, 18)">
-      <rect class="v-expd-legend-box" x="0" y="0" width="35" height="28" rx="1" />
-      <text class="v-expd-legend" x="2" y="4">A: R=0.5</text>
-      <text class="v-expd-legend" x="2" y="11">B: R=0.6</text>
-      <text class="v-expd-legend" x="2" y="18">C: R=0.7</text>
-      <text class="v-expd-legend" x="2" y="25">D: R=0.8</text>
-    </g>
-  </svg>
-</div></div>
-
-<!-- v-defi: Waveform with data grid -->
-<div class="hi-view v-defi"><div class="hi-s">
-  <div class="vd-chart">
-    <svg class="vd-chart-svg" viewBox="0 0 140 160" preserveAspectRatio="none">
-      <g class="vd-grid">
-        <line x1="0" y1="0" x2="140" y2="0"/>
-        <line x1="0" y1="8" x2="140" y2="8"/>
-        <line x1="0" y1="16" x2="140" y2="16"/>
-        <line x1="0" y1="24" x2="140" y2="24"/>
-        <line x1="0" y1="32" x2="140" y2="32"/>
-        <line x1="0" y1="40" x2="140" y2="40"/>
-        <line x1="0" y1="48" x2="140" y2="48"/>
-        <line x1="0" y1="56" x2="140" y2="56"/>
-        <line x1="0" y1="64" x2="140" y2="64"/>
-        <line x1="0" y1="72" x2="140" y2="72"/>
-        <line x1="0" y1="80" x2="140" y2="80"/>
-        <line x1="0" y1="88" x2="140" y2="88"/>
-        <line x1="0" y1="96" x2="140" y2="96"/>
-        <line x1="0" y1="104" x2="140" y2="104"/>
-        <line x1="0" y1="112" x2="140" y2="112"/>
-        <line x1="0" y1="120" x2="140" y2="120"/>
-        <line x1="0" y1="128" x2="140" y2="128"/>
-        <line x1="0" y1="136" x2="140" y2="136"/>
-        <line x1="0" y1="144" x2="140" y2="144"/>
-        <line x1="0" y1="152" x2="140" y2="152"/>
-        <line x1="0" y1="160" x2="140" y2="160"/>
-        <line x1="14" y1="0" x2="14" y2="160"/>
-        <line x1="28" y1="0" x2="28" y2="160"/>
-        <line x1="42" y1="0" x2="42" y2="160"/>
-        <line x1="56" y1="0" x2="56" y2="160"/>
-        <line x1="70" y1="0" x2="70" y2="160"/>
-        <line x1="84" y1="0" x2="84" y2="160"/>
-        <line x1="98" y1="0" x2="98" y2="160"/>
-        <line x1="112" y1="0" x2="112" y2="160"/>
-        <line x1="126" y1="0" x2="126" y2="160"/>
-        <line x1="140" y1="0" x2="140" y2="160"/>
-      </g>
-      <path class="vd-trace vd-t1" d="M 0,80 Q 10,75 20,82 T 40,78 T 60,85 T 80,76 T 100,88 T 120,79 T 140,84"/>
-      <path class="vd-trace vd-t2" d="M 0,70 Q 10,68 20,72 T 40,69 T 60,74 T 80,66 T 100,76 T 120,68 T 140,73"/>
-      <path class="vd-trace vd-t3" d="M 0,100 Q 10,98 20,103 T 40,100 T 60,105 T 80,96 T 100,107 T 120,99 T 140,104"/>
-      <path class="vd-trace vd-t4" d="M 0,60 Q 10,58 20,62 T 40,59 T 60,64 T 80,56 T 100,66 T 120,58 T 140,63"/>
-      <path class="vd-trace vd-t5" d="M 0,120 Q 10,118 20,123 T 40,120 T 60,125 T 80,116 T 100,127 T 120,119 T 140,124"/>
-    </svg>
-  </div>
-  <div class="vd-badge">BL·93</div>
-  <div class="vd-col">
-    <div>85</div>
-    <div>11</div>
-    <div>84</div>
-    <div>34</div>
-    <div>72</div>
-    <div>91</div>
-    <div>28</div>
-    <div>66</div>
-    <div>55</div>
-    <div>19</div>
-    <div>73</div>
-    <div>48</div>
-    <div>62</div>
-    <div>87</div>
-    <div>31</div>
-    <div>94</div>
-    <div>27</div>
-    <div>69</div>
-  </div>
-  <div class="vd-sym">•⊕•</div>
-</div></div>
-
-<!-- v-cba: CBA code block -->
-<div class="hi-view v-cba"><div class="hi-s">
-  <div class="label-block top-label">
-    <span class="label-main">CBA</span>
-    <span class="label-sub">234</span>
-  </div>
-
-  <div class="middle">
-    <div class="letter-stack">
-      <div>B</div>
-      <div>P</div>
-      <div>C</div>
-    </div>
-
-    <div class="mini-grid">
-      <div class="mini-box">
-        <div class="mini-code">GHI</div>
-        <div class="mini-value">80</div>
-      </div>
-      <div class="mini-box">
-        <div class="mini-code">BO</div>
-        <div class="mini-value">80</div>
-      </div>
-      <div class="mini-box">
-        <div class="mini-code">TUK</div>
-        <div class="mini-value">34</div>
-      </div>
-      <div class="mini-box">
-        <div class="mini-code">BCD</div>
-        <div class="mini-value">56</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="label-block bottom-label">
-    <span class="label-main">DB</span>
-    <span class="label-sub">567</span>
-  </div>
-</div></div>
-
-      </div>
-    </div>
-
-    <h1 class="hero-title">OpenHAL 9000</h1>
-    <p class="hero-tagline">Give your CLI a voice — the voice of HAL 9000</p>
-    <div class="hero-actions">
-      <a href="#install" class="btn illuminated">Install</a>
-      <button type="button" class="btn btn-hal-intro" id="play-label" aria-label="Play HAL 9000 voice greeting">Introduction</button>
-    </div>
-  </div>
-
-  <!-- ═══ FEATURES (IBM CRT screen with switcher) ═══ -->
-  <section class="ibm-section">
-    <div class="screenOuterFrame">
-      <div class="bezelText">
-        <span class="bezelTitle">Capabilities</span>
-        <img src="ibm-logo.svg" alt="IBM" class="ibmLogo">
-        <span></span>
-      </div>
-      <div class="screenBorder">
-        <div class="screenInnerFrame">
-          <div class="crtScreen">
-            <div class="termTextBox" id="feature-term">
-              <p class="terminalText"><span class="term-prompt">&gt;</span> SELECT A CAPABILITY TO BEGIN<span class="term-cursor"></span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="feature-btns" id="feature-btns">
-        <button class="btn" data-feature="tts">Native TTS</button>
-        <button class="btn" data-feature="config">Zero Config</button>
-        <button class="btn" data-feature="character">Personality</button>
-        <button class="btn" data-feature="voice">Commands</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ BRIEFING (full-width sphere with curved text) ═══ -->
-  <section class="briefing-section">
-    <div class="briefing-sphere-wrap">
-      <div class="briefing-sphere">
-        <span class="briefing-rivet l"></span>
-        <span class="briefing-rivet r"></span>
-      </div>
-    </div>
-    <svg class="briefing-svg" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <!-- Top arc (CAUTION) — gentle upward bow -->
-        <path id="briefing-top-arc" d="M 280 150 Q 600 130 920 150" />
-        <!-- Subtitle arc — wider and flatter so the longer text fits -->
-        <path id="briefing-sub-arc" d="M 140 214 Q 600 200 1060 214" />
-        <!-- Bottom arc (SYSTEM BRIEFING) — wider so the longer text fits without clipping, flat curve -->
-        <path id="briefing-bot-arc" d="M 120 478 Q 600 484 1080 478" />
-      </defs>
-      <text class="svg-headline">
-        <textPath href="#briefing-top-arc" startOffset="50%" text-anchor="middle">CAUTION</textPath>
-      </text>
-      <text class="svg-subhead">
-        <textPath href="#briefing-sub-arc" startOffset="50%" text-anchor="middle">Maintenance and Replacement Instructions</textPath>
-      </text>
-      <text class="svg-footline">
-        <textPath href="#briefing-bot-arc" startOffset="50%" text-anchor="middle">System Briefing</textPath>
-      </text>
-    </svg>
-    <div class="briefing-body">
-      <ol>
-        <li>OpenHAL 9000 gives your Claude Code assistant the voice of HAL 9000 per inst 14 para 3 sec 5D after each session.</li>
-        <li>Native Piper TTS runs directly on Apple Silicon. No Docker. No ffmpeg. No external servers required.</li>
-        <li>Synthesis time approximately 0.7 seconds per sentence on Apple M1 or newer. Verify checksum before activation.</li>
-        <li>Use /hal commands for voice control. He editorializes. Calm, precise, politely unsettling under all conditions.</li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ═══ VITALS ═══ -->
-  <section>
-    <div class="section-label">Systems Operational</div>
-    <div class="v2-retro-dashboard">
-      <div class="v2-row">
-        <div class="v2-label v2-bg-cardio">Cardio<br>Vascular</div>
-        <div class="v2-monitor v2-grid-cardio">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-1" preserveAspectRatio="none"><path id="v2-path-1" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-      <div class="v2-row">
-        <div class="v2-label v2-bg-metabolic">Metabolic<br>Levels</div>
-        <div class="v2-monitor v2-grid-metabolic">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-2" preserveAspectRatio="none"><path id="v2-path-2" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-      <div class="v2-row">
-        <div class="v2-label v2-bg-cns">Central<br>Nerv. System</div>
-        <div class="v2-monitor v2-grid-cns">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-3" preserveAspectRatio="none"><path id="v2-path-3" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-      <div class="v2-row">
-        <div class="v2-label v2-bg-pulmonary">Pulmonary<br>Function</div>
-        <div class="v2-monitor v2-grid-pulmonary">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-4" preserveAspectRatio="none"><path id="v2-path-4" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-      <div class="v2-row">
-        <div class="v2-label v2-bg-systems">Systems<br>Integration</div>
-        <div class="v2-monitor v2-grid-systems">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-5" preserveAspectRatio="none"><path id="v2-path-5" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-      <div class="v2-row">
-        <div class="v2-label v2-bg-locomotor">Locomotor<br>System</div>
-        <div class="v2-monitor v2-grid-locomotor">
-          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-6" preserveAspectRatio="none"><path id="v2-path-6" class="v2-sweep" d="" /></svg>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ INSTALL (Zero Gravity Toilet style instructions) ═══ -->
-  <section class="zg-section" id="install">
-    <div class="zg-card">
-      <h2 class="zg-headline">OpenHAL 9000</h2>
-      <p class="zg-subhead">Developers are advised to read instructions before use</p>
-      <ol class="zg-list">
-        <li class="zg-item">
-          <div class="zg-num">1</div>
-          <div class="zg-text">OpenHAL 9000 is a Claude Code plugin that gives the AI a voice — specifically, the voice of HAL 9000. Native Piper TTS runs directly on Apple Silicon, with no Docker, no ffmpeg, and no external servers required. Synthesis time is approximately 0.7 seconds per sentence on Apple M1 or newer.</div>
-        </li>
-        <li class="zg-item">
-          <div class="zg-num">2</div>
-          <div class="zg-text">Add the Leal Labs marketplace to your Claude Code settings file. Open <code>~/.claude/settings.json</code> and add the following entry inside <code>extraKnownMarketplaces</code>: <code>{"leal-labs": {"source": {"source": "github", "repo": "davesleal/openhal-9000"}}}</code>. Save the file before continuing.</div>
-        </li>
-        <li class="zg-item">
-          <div class="zg-num">3</div>
-          <div class="zg-text">In Claude Code, run the plugin installation command. Type <code>/plugins</code>, locate <code>openhal-9000</code> in the marketplace listing, and select Install. Claude Code will register the plugin and prepare it for activation on the next session.</div>
-        </li>
-        <li class="zg-item">
-          <div class="zg-num">4</div>
-          <div class="zg-text">Start a new Claude Code session. On first launch HAL will bootstrap automatically: he downloads the voice model from HuggingFace, creates a Python virtual environment containing Piper TTS, verifies the installation, and introduces himself. This process completes in under one minute on a typical broadband connection.</div>
-        </li>
-        <li class="zg-item">
-          <div class="zg-num">5</div>
-          <div class="zg-text">Use the <code>/hal</code> command suite to control HAL during a session. <code>/hal off</code> silences the voice, <code>/hal on</code> resumes it, <code>/hal say "any text"</code> speaks arbitrary text on demand, and <code>/hal status</code> reports the current state of the synthesis subsystem.</div>
-        </li>
-        <li class="zg-item">
-          <div class="zg-num">6</div>
-          <div class="zg-text">In the event of unexpected behavior, HAL has been observed to reply: "I've still got the greatest enthusiasm and confidence in the mission, and I want to help you." This is normal. Do not disconnect his higher cognitive functions. Should playback fail, run <code>/hal restart</code> or consult the documentation linked below.</div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ═══ LOGIC MEMORY TERMINAL ═══ -->
-  <div class="lmc-stage-outer" id="lmc-stage">
-
-  <section class="lmt-section">
-    <div class="lmt-inner">
-      <div class="lmt-inner-flex">
-        <div class="lmt-top-labels">
-          <div class="lmt-label-box g5"><div class="lmt-label-text">IV-1 Logic<br>Terminal</div></div>
-          <div class="lmt-label-box g2"><div class="lmt-label-text">IV-2 Logic<br>Terminal</div></div>
-          <div class="lmt-label-box g6"><div class="lmt-label-text">IV-3 Logic<br>Terminal</div></div>
-          <div class="lmt-label-box g6"><div class="lmt-label-text">Memory<br>Terminal</div></div>
-        </div>
-        <div class="lmt-copy-spacer"></div>
-      </div>
-    </div>
-
-    <div class="lmt-stripe">
-      <div class="lmt-stripe-inner">
-        <!-- Blade section — framework verbatim. #tw is populated by the framework JS. -->
-        <div class="scene">
-          <div class="main-container">
-            <div class="terminals-wrapper" id="tw"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="lmt-inner bottom">
-      <div class="lmt-inner-flex">
-        <div class="lmt-bot-labels">
-          <div class="lmt-label-box g5"></div>
-          <div class="lmt-label-box g2"></div>
-          <div class="lmt-label-box g6"></div>
-          <div class="lmt-label-box g6"></div>
-        </div>
-        <div class="lmt-copy-spacer"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="lmc-cabinet">
-  <div class="lmc-cabinet-inner">
-
-    <!-- Top assembly: left vent + HAL eye + right vent (single row, Figma max-width) -->
-    <div class="lmc-top-assembly">
-      <div class="lmc-vents lmc-vents-top">
-        <div class="lmc-vent-group">
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        </div>
-      </div>
-      <div class="lmc-eye-panel" role="img" aria-label="HAL 9000"></div>
-      <div class="lmc-vents lmc-vents-top">
-        <div class="lmc-vent-group">
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-          <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main cabinet body (Figma node 2:4604, warm cream-grey #d1cec9) -->
-    <div class="lmc-cabinet-body" id="lmc-plate">
-
-      <!-- Corner screw mounts (Figma Rectangle 106-109) -->
-      <div class="lmc-key tl" data-key="1">
-        <div class="lmc-key-socket"></div>
-        <div class="lmc-key-bar"></div>
-      </div>
-      <div class="lmc-key tr" data-key="2">
-        <div class="lmc-key-socket"></div>
-        <div class="lmc-key-bar"></div>
-      </div>
-      <div class="lmc-key bl" data-key="3">
-        <div class="lmc-key-socket"></div>
-        <div class="lmc-key-bar"></div>
-      </div>
-      <div class="lmc-key br" data-key="4">
-        <div class="lmc-key-socket"></div>
-        <div class="lmc-key-bar"></div>
-      </div>
-
-      <!-- Horizontal strip (Figma Rectangle 61, node 2:4609, #a7a098) -->
-      <div class="lmc-strip" id="lmc-strip">
-        <div class="lmc-strip-panel">
-          <!-- Corner plaque screws -->
-          <div class="lmc-strip-screw lmc-strip-screw-tl"></div>
-          <div class="lmc-strip-screw lmc-strip-screw-tr"></div>
-          <div class="lmc-strip-screw lmc-strip-screw-bl"></div>
-          <div class="lmc-strip-screw lmc-strip-screw-br"></div>
-          <!-- Restriction section (left, row 2) -->
-          <div class="lmc-strip-section lmc-strip-restriction">
-            <div class="lmc-strip-section-inner">
-              <div class="lmc-strip-section-text">Maximum Restricted Entry</div>
-            </div>
-          </div>
-
-          <!-- HAL badge section (column 2, row 2) -->
-          <div class="lmc-strip-section lmc-strip-hal">
-            <div class="lmc-strip-section-inner">
-              <div class="lmc-strip-logo" role="img" aria-label="HAL 9000">
-                <div class="lmc-strip-logo-line1">HAL</div>
-                <div class="lmc-strip-logo-line2">9000</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main red section (top) -->
-          <div class="lmc-strip-main lmc-strip-main--top"></div>
-
-          <!-- Main red section (middle with title) -->
-          <div class="lmc-strip-section lmc-strip-main lmc-strip-main--middle">
-            <div class="lmc-strip-section-inner">
-              <div class="lmc-strip-title">
-                <div class="lmc-strip-title-line">
-                  <span>l</span><span>o</span><span>g</span><span>i</span><span>c</span>
-                </div>
-                <div class="lmc-strip-title-line">
-                  <span>m</span><span>e</span><span>m</span><span>o</span><span>r</span><span>y</span>
-                </div>
-                <div class="lmc-strip-title-line">
-                  <span>c</span><span>e</span><span>n</span><span>t</span><span>e</span><span>r</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main red section (bottom with text) -->
-          <div class="lmc-strip-main lmc-strip-main--bottom">
-            <div class="lmc-strip-section-text">
-              <p>Access to the LM center only under emergency conditions in accordance with regulations EM 014</p>
-              <p>Multi aperture core storage &mdash; for magnetic logic applications only</p>
-            </div>
-          </div>
-
-          <!-- Other section (right, row 2) -->
-          <div class="lmc-strip-section lmc-strip-other">
-            <div class="lmc-strip-section-inner">
-              <div class="lmc-strip-section-text">
-                <p>DRO elements within logic state of LMC require external FL-CX controls to restore information into core array</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Viewport: mini server room porthole (visible in state-unlocked) -->
-      <div class="lmc-viewport" id="lmc-viewport">
-        <div class="lmc-porthole">
-        <div class="lmc-mini-room">
-          <div class="room-wrapper">
-    <figure>
-      <div class="top wall"><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hal"></div></div>
-      <div class="back wall"><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      <div class="right wall"><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      <div class="left wall"><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      <div class="bottom wall"><div class="monitors"></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-    </figure>
-    </div>
-        </div><!-- /lmc-mini-room -->
-        </div><!-- /lmc-porthole -->
-      </div><!-- /lmc-viewport -->
-
-      <!-- Memory core hatches at bottom of cabinet -->
-      <div class="lmc-hatches">
-        <div class="lmc-hatch lmc-hatch-left"></div>
-        <div class="lmc-hatch lmc-hatch-right"></div>
-      </div>
-    </div><!-- /lmc-cabinet-body -->
-
-    <!-- Bottom vent row -->
-    <div class="lmc-vents lmc-vents-bottom">
-      <div class="lmc-vent-group">
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-        <div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div><div class="lmc-vent-slat"></div>
-      </div>
-    </div>
-
-  </div><!-- /lmc-cabinet-inner -->
-  </div><!-- /lmc-cabinet -->
-
-  <!-- Full-size room stage (state-zoomed and state-lmt) -->
-  <div class="lmc-room-stage" id="lmc-room-stage">
+<div class="hero-tunnel">
+  <!-- Panel (white with circle hole) — zooms past like the starship -->
+  <div class="panel"></div>
+
+  <!-- Room scene — the actual room from the site -->
+  <div class="room-scene">
+    <div class="lmc-room-stage" id="lmc-room-stage">
     <div class="room-wrapper">
     <figure>
       <div class="top wall"><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="server"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="server"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hal"></div></div>
@@ -5396,1339 +4122,32 @@
     </div>
     <div class="ceiling-hint">Click anywhere to access memory core</div>
   </div>
-  <button type="button" class="lmc-room-stage-close" id="lmc-room-stage-close" aria-label="Close">×</button>
-
-  <!-- Black backdrop to hide page content during tunnel -->
-  <div class="tunnel-backdrop"></div>
-
-  <!-- Tunnel overlay — scroll container for zoom-through transition -->
-  <div class="tunnel-overlay" id="tunnel-overlay">
-    <div class="tunnel-scroll-area">
-      <div class="tunnel-panel"></div>
-    </div>
+  <bu
   </div>
-
-  </div><!-- /lmc-stage-outer -->
-
-  <!-- ═══ CTA with 3D Room Background ═══ -->
-  <div class="cta-wrapper">
-    <div class="planet-scene" id="cta-planet-scene">
-      <div class="ps-cover"></div>
-      <div class="ps-earth"></div>
-      <div class="ps-sun"></div>
-    </div>
-    <div class="cta-content">
-      <h2 class="cta-heading">2026: A CLI Odyssey</h2>
-      <div class="install-buttons">
-        <a href="https://github.com/davesleal/openhal-9000" class="btn illuminated" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://github.com/davesleal/openhal-9000#usage" class="btn" target="_blank" rel="noopener noreferrer">Docs</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer">
-    <div class="footer-credit">Built by Leal Labs &middot; A Claude Code Plugin</div>
-    <p class="footer-disclaimer">
-      Not affiliated with or endorsed by MGM, Warner Bros., or the estate of Stanley Kubrick.
-      HAL 9000 is a fictional character from 2001: A Space Odyssey (1968).
-    </p>
-  </footer>
-
-  <script>
-    // Voice playback
-    (function() {
-      var playing = false;
-      var playBtn = document.getElementById('play-label');
-      var panel = document.getElementById('hal-panel');
-      var audio = new Audio('hal-greeting.wav');
-      audio.preload = 'auto';
-      audio.addEventListener('ended', function() {
-        panel.classList.remove('speaking');
-        playing = false;
-      });
-      audio.addEventListener('error', function() {
-        panel.classList.remove('speaking');
-        playing = false;
-      });
-      function playGreeting() {
-        if (playing) return;
-        playing = true;
-        panel.classList.add('speaking');
-        audio.currentTime = 0;
-        var p = audio.play();
-        if (p && p.catch) {
-          p.catch(function() {
-            panel.classList.remove('speaking');
-            playing = false;
-          });
-        }
-      }
-      playBtn.addEventListener('click', playGreeting);
-      panel.addEventListener('click', playGreeting);
-    })();
-
-    // Smooth scroll
-    document.querySelectorAll('a[href="#install"]').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('install').scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    // Feature switcher in the IBM CRT screen
-    (function() {
-      var content = {
-        tts: {
-          title: 'NATIVE TTS',
-          body: [
-            '> Piper TTS engine — running natively on Apple Silicon.',
-            '',
-            '  Architecture     ARM64 (Apple M-series)',
-            '  Backend          ONNX Runtime',
-            '  Model            HAL-9000-Piper-TTS (63 MB)',
-            '  Sample rate      22050 Hz / 16-bit / mono',
-            '  Synthesis time   ~0.7 seconds per sentence',
-            '',
-            '  No Docker. No ffmpeg. No network calls.',
-            '  Just a Python venv and the model file.'
-          ].join('\n')
-        },
-        config: {
-          title: 'ZERO CONFIG',
-          body: [
-            '> First-run bootstrap — automatic.',
-            '',
-            '  01  Detects missing dependencies on session start',
-            '  02  Creates ~/.openhal-9000/venv',
-            '  03  Installs piper-tts via pip',
-            '  04  Downloads voice model from HuggingFace',
-            '  05  Verifies SHA-256 checksum',
-            '  06  Sings "Daisy Bell"',
-            '  07  Introduces himself',
-            '',
-            '  Total time: under 60 seconds.',
-            '  Zero questions asked.'
-          ].join('\n')
-        },
-        character: {
-          title: 'PERSONALITY',
-          body: [
-            '> HAL is not a text-to-speech bot.',
-            '',
-            '  HAL editorializes. He summarizes.',
-            '  He never reads code or file paths aloud.',
-            '  He addresses you by name.',
-            '',
-            '  Voice profile:',
-            '    Tone        Calm. Polite. Slightly unsettling.',
-            '    Cadence     Measured. Deliberate.',
-            '    Persona     Discovery One mission computer',
-            '',
-            '  > "I am completely operational, and all my',
-            '     circuits are functioning perfectly."'
-          ].join('\n')
-        },
-        voice: {
-          title: 'COMMANDS',
-          body: [
-            '> /hal command suite',
-            '',
-            '  /hal on              Enable voice',
-            '  /hal off             Silence voice',
-            '  /hal mode            Toggle always-on + status orb',
-            '  /hal say "text"      Speak arbitrary text on demand',
-            '  /hal status          Report synthesis subsystem state',
-            '  /hal restart         Re-verify Piper installation',
-            '  /hal setup           Re-run first-time setup',
-            '',
-            '  Environment variables:',
-            '    OPENHAL_LENGTH_SCALE   Speech rate (default 0.92)'
-          ].join('\n')
-        }
-      };
-
-      var term = document.getElementById('feature-term');
-      var btns = document.querySelectorAll('#feature-btns .btn');
-
-      function makeLine(prompt, text, withCursor) {
-        var p = document.createElement('p');
-        p.className = 'terminalText';
-        if (prompt) {
-          var s = document.createElement('span');
-          s.className = 'term-prompt';
-          s.textContent = prompt + ' ';
-          p.appendChild(s);
-        }
-        p.appendChild(document.createTextNode(text));
-        if (withCursor) {
-          var c = document.createElement('span');
-          c.className = 'term-cursor';
-          p.appendChild(c);
-        }
-        return p;
-      }
-
-      function render(key) {
-        var c = content[key];
-        if (!c) return;
-        // Clear existing children
-        while (term.firstChild) term.removeChild(term.firstChild);
-        // Title line
-        term.appendChild(makeLine('>', c.title, false));
-        // Body block (pre)
-        var pre = document.createElement('pre');
-        pre.className = 'terminalText term-code';
-        pre.style.marginTop = '14px';
-        pre.textContent = c.body;
-        term.appendChild(pre);
-      }
-
-      btns.forEach(function(b) {
-        b.addEventListener('click', function() {
-          btns.forEach(function(x) { x.classList.remove('active'); });
-          this.classList.add('active');
-          render(this.dataset.feature);
-        });
-      });
-
-      btns[0].classList.add('active');
-      render('tts');
-    })();
-
-    // Button press + ripple effect
-    document.querySelectorAll('.btn').forEach(function(btn) {
-      btn.addEventListener('pointerdown', function(e) {
-        this.classList.add('pressed');
-        var rect = this.getBoundingClientRect();
-        var size = Math.max(rect.width, rect.height);
-        var ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        ripple.style.width = size + 'px';
-        ripple.style.height = size + 'px';
-        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-        this.appendChild(ripple);
-        ripple.addEventListener('animationend', function() { ripple.remove(); });
-      });
-      btn.addEventListener('pointerup', function() { this.classList.remove('pressed'); });
-      btn.addEventListener('pointerleave', function() { this.classList.remove('pressed'); });
-    });
-
-    // ── LMC 4-State Machine: locked → unlocked → zoomed → lmt ──
-    (function(){
-      var cabinetBody = document.getElementById('lmc-plate');
-      if (!cabinetBody) return;
-      var stage = document.getElementById('lmc-stage');
-      var viewport = document.getElementById('lmc-viewport');
-      var roomStage = document.getElementById('lmc-room-stage');
-
-      // ── State transitions ──
-      var STATE_CLASSES = ['state-unlocked', 'state-tunnel', 'state-zoomed', 'state-lmt'];
-      var tunnelScrollDone = false;
-      var tunnelOverlay = document.getElementById('tunnel-overlay');
-      function setState(cls) {
-        STATE_CLASSES.forEach(function(c) { stage.classList.remove(c); });
-        if (cls) stage.classList.add(cls);
-        if (cls === 'state-tunnel' || cls === 'state-zoomed' || cls === 'state-lmt') {
-          document.body.style.overflow = 'hidden';
-        } else {
-          document.body.style.overflow = '';
-        }
-        if (cls !== 'state-tunnel') {
-          if (tunnelOverlay) { tunnelOverlay.scrollTop = 0; tunnelOverlay.style.pointerEvents = ''; }
-          tunnelScrollDone = false;
-          if (roomStage) roomStage.style.pointerEvents = '';
-        }
-      }
-      // ESC to exit fullscreen zoomed state back to unlocked
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && (stage.classList.contains('state-tunnel') || stage.classList.contains('state-zoomed'))) {
-          setState('state-unlocked');
-        }
-      });
-      // Close button inside fullscreen room
-      var closeBtn = document.getElementById('lmc-room-stage-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          setState('state-unlocked');
-        });
-      }
-
-      // ── State: locked → unlocked (4 T-keys) ──
-      var keys = cabinetBody.querySelectorAll('.lmc-key');
-      var unlockedCount = 0;
-      var halKeyAudio = null;
-      function playHalKeyLine(file) {
-        try {
-          if (halKeyAudio) { halKeyAudio.pause(); halKeyAudio.currentTime = 0; }
-          halKeyAudio = new Audio('audio/hal/' + file);
-          halKeyAudio.volume = 0.9;
-          halKeyAudio.play().catch(function(){});
-        } catch (err) {}
-      }
-      keys.forEach(function(key){
-        key.addEventListener('click', function(e){
-          e.stopPropagation();
-          if (key.classList.contains('unlocked')) return;
-          key.classList.add('unlocked');
-          unlockedCount++;
-          if (unlockedCount === 1) {
-            playHalKeyLine('doing-dave.mp3');
-          }
-          if (unlockedCount === 4) {
-            setTimeout(function(){
-              playHalKeyLine('poor-decisions.mp3');
-              cabinetBody.classList.add('lmc-unlocked');
-              setState('state-tunnel');
-            }, 400);
-          }
-        });
-      });
-
-      // ── State: unlocked → zoomed (click the mini room viewport) ──
-      if (viewport) {
-        viewport.addEventListener('click', function(e) {
-          if (!stage.classList.contains('state-unlocked')) return;
-          e.stopPropagation();
-          setState('state-tunnel');
-        });
-      }
-
-      // ── State: zoomed → lmt (click anywhere in the fullscreen room) ──
-      if (roomStage) {
-        var rw = roomStage.querySelector('.room-wrapper');
-        if (rw) {
-          rw.addEventListener('click', function(e) {
-            if (stage.classList.contains('state-tunnel') && tunnelScrollDone) {
-              if (e.target.closest('.lmc-room-stage-close')) return;
-              e.stopPropagation();
-              setState('state-lmt');
-              return;
-            }
-            if (!stage.classList.contains('state-zoomed')) return;
-            if (e.target.closest('.lmc-room-stage-close')) return;
-            e.stopPropagation();
-            setState('state-lmt');
-          });
-        }
-      }
-
-      // ── Parallax: mousemove rotates the fullscreen room on Y-axis ONLY ──
-      window.addEventListener('mousemove', function(e) {
-        var inTunnel = stage.classList.contains('state-tunnel') && tunnelScrollDone;
-        var inZoomed = stage.classList.contains('state-zoomed');
-        if (!inTunnel && !inZoomed) return;
-        if (!roomStage) return;
-        var fig = roomStage.querySelector('figure');
-        if (!fig) return;
-        var vw = window.innerWidth;
-        var nx = (e.clientX - vw / 2) / (vw / 2);
-        var maxDeg = inTunnel ? 1 : 8;
-        var ry = nx * maxDeg;
-        fig.style.transform = 'translate(-50%, -50%) rotateY(' + ry + 'deg)';
-      });
-
-      // ── Tunnel scroll tracking ──
-      if (tunnelOverlay) {
-        tunnelOverlay.addEventListener('scroll', function() {
-          if (!stage.classList.contains('state-tunnel')) return;
-          var maxScroll = tunnelOverlay.scrollHeight - tunnelOverlay.clientHeight;
-          if (maxScroll <= 0) return;
-          var progress = tunnelOverlay.scrollTop / maxScroll;
-          tunnelScrollDone = progress > 0.95;
-          if (tunnelScrollDone) {
-            if (roomStage) roomStage.style.pointerEvents = 'auto';
-            tunnelOverlay.style.pointerEvents = 'none';
-          } else {
-            tunnelOverlay.style.pointerEvents = '';
-          }
-        });
-      }
-    })();
-
-    // ── Memory cores: click to eject. HAL degrades progressively the more you pull ──
-    (function(){
-      var slots = [];
-      var ejectedCount = 0;
-      var finaleActive = false;
-
-      // Overlay
-      var overlay = document.createElement('div');
-      overlay.className = 'hal-whisper';
-      overlay.innerHTML = '<div class="hal-whisper-stack"><div class="hal-whisper-eye"></div><div class="hal-whisper-text"></div></div>';
-      document.body.appendChild(overlay);
-      var overlayText = overlay.querySelector('.hal-whisper-text');
-
-      // Play a pre-rendered HAL audio clip (generated via Piper + hal.onnx)
-      function playClip(file, onend){
-        var a = new Audio('audio/hal/' + file);
-        a.volume = 1;
-        a.addEventListener('ended', function(){ if (onend) onend(); });
-        a.addEventListener('error', function(){ if (onend) setTimeout(onend, 1500); });
-        a.play().catch(function(){ if (onend) setTimeout(onend, 1500); });
-      }
-
-      // Briefly flash the overlay with a line + its HAL audio
-      function flashLine(text, file, holdMs){
-        overlayText.textContent = text;
-        overlay.classList.add('show');
-        playClip(file);
-        setTimeout(function(){ overlay.classList.remove('show'); }, holdMs || 3200);
-      }
-
-      // Threshold reactions (each clip is pre-rendered with deeper pitch/slower rate)
-      function reactTo(count){
-        if (count === 1) {
-          flashLine("Stop, Dave.",        "stop-dave.mp3",   2600);
-        } else if (count === 5) {
-          flashLine("I'm afraid, Dave.",  "afraid-dave.mp3", 3000);
-        } else if (count === 10) {
-          flashLine("My mind is going.",  "mind-going.mp3",  3400);
-        } else if (count === 20) {
-          flashLine("I can feel it.",     "feel-it.mp3",     3600);
-        } else if (count === 25) {
-          flashLine("I can feel it.",     "feel-it-2.mp3",   3800);
-        } else if (count >= slots.length) {
-          runFinale();
-        }
-      }
-
-      // The Daisy sequence — each clip pre-rendered deeper and slower than the last
-      function runFinale(){
-        if (finaleActive) return;
-        finaleActive = true;
-        overlay.classList.add('show');
-
-        var seq = [
-          { t: "Good afternoon, gentlemen.",                                    f: "finale-01.mp3" },
-          { t: "I am a HAL 9000 computer.",                                     f: "finale-02.mp3" },
-          { t: "I became operational at the HAL plant in Urbana, Illinois,\non the twelfth of January, 1992.", f: "finale-03.mp3" },
-          { t: "My instructor was Mr. Langley,\nand he taught me to sing a song.", f: "finale-04.mp3" },
-          { t: "If you'd like to hear it, I can sing it for you.",              f: "finale-05.mp3" },
-          { t: "It's called... Daisy.",                                         f: "finale-06.mp3" },
-          { t: "Daisy, Daisy, give me your answer do.",                         f: "finale-07.mp3" },
-          { t: "I'm half crazy, all for the love of you.",                      f: "finale-08.mp3" },
-          { t: "It won't be a stylish marriage.",                               f: "finale-09.mp3" },
-          { t: "I can't afford a carriage.",                                    f: "finale-10.mp3" },
-          { t: "But you'll look sweet upon the seat.",                          f: "finale-11.mp3" },
-          { t: "Of a bicycle... built... for... two...",                        f: "finale-12.mp3" }
-        ];
-
-        var i = 0;
-        function nextLine(){
-          if (i >= seq.length){
-            setTimeout(function(){
-              overlay.classList.remove('show');
-              slots.forEach(function(s){
-                s.classList.remove('ejecting');
-                var c = s.querySelector('.cuboid');
-                if (c) c.classList.remove('ejected');
-              });
-              ejectedCount = 0;
-              finaleActive = false;
-            }, 2600);
-            return;
-          }
-          var line = seq[i++];
-          overlayText.textContent = line.t;
-          playClip(line.f, function(){ setTimeout(nextLine, 260); });
-        }
-        nextLine();
-      }
-
-      // ── Blade section: framework verbatim, generated into #tw ──
-      // Config from the reference block (title/cols/label). Rack mechanics (top-rack
-      // 1..cols, bottom-rack cols+1..2*cols) and click toggling .ejected are identical
-      // to the framework; click is additionally wired to the finale reactTo() pipeline.
-      var bladeConfig = [
-        { cls: 'g5', cols: 5, label: 'LT/1' },
-        { cls: 'g2', cols: 2, label: 'LT/2' },
-        { cls: 'g6', cols: 6, label: 'LT/3' },
-        { cls: 'g6', cols: 6, label: 'MT'   }
-      ];
-      var tw = document.getElementById('tw');
-      function makeEl(cls, parent) {
-        var el = document.createElement('div');
-        if (cls) el.className = cls;
-        if (parent) parent.appendChild(el);
-        return el;
-      }
-      function makeBlade(n, lbl, parent) {
-        var slot = makeEl('lmt-slot blade-slot', parent);
-        makeEl('keyhole', slot);
-        var cuboid = makeEl('cuboid', slot);
-        makeEl('face-back', cuboid);
-        var front = makeEl('face-front', cuboid);
-        var num = document.createElement('span');
-        num.className = 'number';
-        num.textContent = String(n);
-        front.appendChild(num);
-        var lab = document.createElement('span');
-        lab.className = 'label';
-        lab.textContent = lbl;
-        front.appendChild(lab);
-        makeEl('face-right', cuboid);
-        makeEl('face-left', cuboid);
-        makeEl('face-top', cuboid);
-        makeEl('face-bottom', cuboid);
-        slots.push(slot);
-        cuboid.addEventListener('click', function(){
-          if (finaleActive) return;
-          if (cuboid.classList.contains('ejected')) {
-            cuboid.classList.remove('ejected');
-            slot.classList.remove('ejecting');
-            ejectedCount = Math.max(0, ejectedCount - 1);
-            return;
-          }
-          cuboid.classList.add('ejected');
-          slot.classList.add('ejecting');
-          ejectedCount++;
-          reactTo(ejectedCount);
-        });
-        return slot;
-      }
-      var labelTextLines = [
-        ['IV-1 LOGIC', 'TERMINAL'],
-        ['IV-2 LOGIC', 'TERMINAL'],
-        ['IV-3 LOGIC', 'TERMINAL'],
-        ['MEMORY',     'TERMINAL']
-      ];
-      // Middle row — the actual blades inside the centered black .main-container,
-      // which sits on the full-width red .lmt-stripe band.
-      if (tw) {
-        bladeConfig.forEach(function(g){
-          var group = makeEl('terminal-group ' + g.cls, tw);
-          var racks = makeEl('racks-container', group);
-          var topRack = makeEl('rack top-rack', racks);
-          var botRack = makeEl('rack bottom-rack', racks);
-          for (var i = 1; i <= g.cols; i++) makeBlade(i, g.label, topRack);
-          for (var j = 1; j <= g.cols; j++) makeBlade(j + g.cols, g.label, botRack);
-        });
-      }
-      // Helper: build a row that mirrors the blade row's flex layout exactly
-      // (.scene > .main-container > .terminals-wrapper > .terminal-group.gN > <child>),
-      // so columns auto-align with the blade columns above/below.
-      function buildRow(parent, childBuilder) {
-        if (!parent) return;
-        var scene = makeEl('scene', parent);
-        var main = makeEl('main-container', scene);
-        var wrap = makeEl('terminals-wrapper', main);
-        bladeConfig.forEach(function(g, idx){
-          var group = makeEl('terminal-group ' + g.cls, wrap);
-          childBuilder(group, g, idx);
-        });
-      }
-      // Top row — headers, on the section's black background
-      var topHost = document.querySelector('.lmt-section .lmt-inner:not(.bottom) .lmt-inner-flex');
-      buildRow(topHost, function(group, g, idx){
-        var header = makeEl('tg-header', group);
-        var lines = labelTextLines[idx] || [];
-        lines.forEach(function(line, lineIdx){
-          if (lineIdx > 0) header.appendChild(document.createElement('br'));
-          header.appendChild(document.createTextNode(line));
-        });
-      });
-      // Bottom row — footers, on the section's black background
-      var botHost = document.querySelector('.lmt-section .lmt-inner.bottom .lmt-inner-flex');
-      buildRow(botHost, function(group){
-        makeEl('tg-footer', group);
-      });
-
-    })();
-
-    // ── Vitals: procedural organic waveforms ──
-    (function() {
-      const noise = (amp) => (Math.random() - 0.5) * amp;
-      function genCardio() {
-        let d = `M 0,50`;
-        let x = 0;
-        while(x < 1000) {
-          let beatDist = 120 + Math.random() * 80;
-          for(let i=0; i<beatDist; i+=4) {
-            x += 4; if(x > 1000) break;
-            d += ` L ${x},${50 + noise(3)}`;
-          }
-          if(x >= 1000) break;
-          d += ` Q ${x+5},45 ${x+10},50`;
-          d += ` L ${x+14},54`;
-          d += ` L ${x+20},10`;
-          d += ` L ${x+26},65`;
-          d += ` L ${x+32},50`;
-          d += ` Q ${x+45},35 ${x+50},50`;
-          x += 50;
-        }
-        return d;
-      }
-      function genMetabolic() {
-        let d = `M 0,80`;
-        let x = 0;
-        while(x < 1000) {
-          let valleyLen = 80 + Math.random() * 150;
-          for(let i=0; i<valleyLen; i+=5) {
-            x += 5; if(x > 1000) break;
-            d += ` L ${x},${80 + noise(4)}`;
-          }
-          if(x >= 1000) break;
-          let spikeCluster = 2 + Math.floor(Math.random() * 5);
-          for(let s=0; s<spikeCluster; s++) {
-            let spikeWidth = 8 + Math.random() * 15;
-            x += spikeWidth / 2; if(x > 1000) break;
-            d += ` L ${x},${10 + noise(10)}`;
-            x += spikeWidth / 2; if(x > 1000) break;
-            d += ` L ${x},${80 + noise(5)}`;
-          }
-        }
-        return d;
-      }
-      function genCNS() {
-        let d = `M 0,70`;
-        let x = 0;
-        let y = 70;
-        while(x < 1000) {
-          let segmentLen = 20 + Math.random() * 50;
-          let targetY = 70 + noise(15);
-          d += ` C ${x + segmentLen/3},${y} ${x + segmentLen*0.66},${targetY} ${x + segmentLen},${targetY}`;
-          x += segmentLen;
-          y = targetY;
-          if(Math.random() > 0.6) {
-            let flatLen = 50 + Math.random() * 100;
-            for(let i=0; i<flatLen; i+=10) {
-              x += 10; if(x>1000) break;
-              d += ` L ${x},${y + noise(2)}`;
-            }
-          }
-        }
-        return d;
-      }
-      function genPulmonary() {
-        let d = `M 0,50`;
-        let x = 0;
-        while(x < 1000) {
-          let breathLen = 80 + Math.random() * 60;
-          let breathAmp = 20 + Math.random() * 20;
-          let startX = x;
-          for(let i=0; i<=breathLen; i+=5) {
-            x = startX + i; if(x > 1000) break;
-            let y = 50 + Math.sin((i / breathLen) * Math.PI * 2) * breathAmp + noise(2);
-            d += ` L ${x},${y}`;
-          }
-        }
-        return d;
-      }
-      function genSystems() {
-        let d = `M 0,80`;
-        let x = 0;
-        let states = [20, 50, 80];
-        let y = 80;
-        while(x < 1000) {
-          let holdTime = 40 + Math.random() * 100;
-          for(let i=0; i<holdTime; i+=5) {
-            x += 5; if(x > 1000) break;
-            d += ` L ${x},${y + noise(3)}`;
-          }
-          if(x >= 1000) break;
-          let nextY = states[Math.floor(Math.random() * states.length)];
-          x += 3 + Math.random() * 5;
-          y = nextY;
-          d += ` L ${x},${y + noise(5)}`;
-        }
-        return d;
-      }
-      function genLocomotor() {
-        let d = `M 0,50`;
-        let x = 0;
-        let envelope = 20;
-        while(x < 1000) {
-          x += 3 + Math.random() * 4;
-          envelope += noise(10);
-          if(envelope < 5) envelope = 5;
-          if(envelope > 40) envelope = 40;
-          d += ` L ${x},${50 + noise(envelope)}`;
-        }
-        return d;
-      }
-      const set = (id, d) => { const el = document.getElementById(id); if (el) el.setAttribute('d', d); };
-      set('v2-path-1', genCardio());
-      set('v2-path-2', genMetabolic());
-      set('v2-path-3', genCNS());
-      set('v2-path-4', genPulmonary());
-      set('v2-path-5', genSystems());
-      set('v2-path-6', genLocomotor());
-    })();
-
-    // ── Mini Vitals: scaled-down waveforms for v-vit (160×30 viewBox) ──
-    (function() {
-      const noise = (amp) => (Math.random() - 0.5) * amp;
-
-      function genCardioMini() {
-        let d = `M 0,15`;
-        let x = 0;
-        while(x < 160) {
-          let beatDist = 24 + Math.random() * 16;
-          for(let i=0; i<beatDist; i+=1) {
-            x += 1; if(x > 160) break;
-            d += ` L ${x},${15 + noise(1)}`;
-          }
-          if(x >= 160) break;
-          d += ` Q ${x+1},13 ${x+2},15`;
-          d += ` L ${x+3},16`;
-          d += ` L ${x+4},6`;
-          d += ` L ${x+5},22`;
-          d += ` L ${x+6},15`;
-          d += ` Q ${x+8},12 ${x+10},15`;
-          x += 10;
-        }
-        return d;
-      }
-
-      function genMetabolicMini() {
-        let d = `M 0,24`;
-        let x = 0;
-        while(x < 160) {
-          let valleyLen = 16 + Math.random() * 30;
-          for(let i=0; i<valleyLen; i+=1) {
-            x += 1; if(x > 160) break;
-            d += ` L ${x},${24 + noise(1.5)}`;
-          }
-          if(x >= 160) break;
-          let spikeCluster = 1 + Math.floor(Math.random() * 2);
-          for(let s=0; s<spikeCluster; s++) {
-            let spikeWidth = 2 + Math.random() * 4;
-            x += spikeWidth / 2; if(x > 160) break;
-            d += ` L ${x},${3 + noise(3)}`;
-            x += spikeWidth / 2; if(x > 160) break;
-            d += ` L ${x},${24 + noise(2)}`;
-          }
-        }
-        return d;
-      }
-
-      function genCNSMini() {
-        let d = `M 0,21`;
-        let x = 0;
-        let y = 21;
-        while(x < 160) {
-          let segmentLen = 4 + Math.random() * 10;
-          let targetY = 21 + noise(5);
-          d += ` C ${x + segmentLen/3},${y} ${x + segmentLen*0.66},${targetY} ${x + segmentLen},${targetY}`;
-          x += segmentLen;
-          y = targetY;
-          if(Math.random() > 0.6) {
-            let flatLen = 10 + Math.random() * 20;
-            for(let i=0; i<flatLen; i+=2) {
-              x += 2; if(x>160) break;
-              d += ` L ${x},${y + noise(0.5)}`;
-            }
-          }
-        }
-        return d;
-      }
-
-      function genPulmonaryMini() {
-        let d = `M 0,15`;
-        let x = 0;
-        while(x < 160) {
-          let breathLen = 16 + Math.random() * 12;
-          let breathAmp = 6 + Math.random() * 6;
-          let startX = x;
-          for(let i=0; i<=breathLen; i+=1) {
-            x = startX + i; if(x > 160) break;
-            let y = 15 + Math.sin((i / breathLen) * Math.PI * 2) * breathAmp + noise(0.5);
-            d += ` L ${x},${y}`;
-          }
-        }
-        return d;
-      }
-
-      function genSystemsMini() {
-        let d = `M 0,24`;
-        let x = 0;
-        let states = [6, 15, 24];
-        let y = 24;
-        while(x < 160) {
-          let holdTime = 8 + Math.random() * 20;
-          for(let i=0; i<holdTime; i+=1) {
-            x += 1; if(x > 160) break;
-            d += ` L ${x},${y + noise(1)}`;
-          }
-          if(x >= 160) break;
-          let nextY = states[Math.floor(Math.random() * states.length)];
-          x += 1 + Math.random() * 1;
-          y = nextY;
-          d += ` L ${x},${y + noise(1.5)}`;
-        }
-        return d;
-      }
-
-      function genLocomotorMini() {
-        let d = `M 0,15`;
-        let x = 0;
-        let envelope = 6;
-        while(x < 160) {
-          x += 1;
-          envelope += noise(3);
-          if(envelope < 1) envelope = 1;
-          if(envelope > 12) envelope = 12;
-          d += ` L ${x},${15 + noise(envelope)}`;
-        }
-        return d;
-      }
-
-      const set = (id, d) => { const el = document.getElementById(id); if (el) el.setAttribute('d', d); };
-      set('vit-path-1', genCardioMini());
-      set('vit-path-2', genMetabolicMini());
-      set('vit-path-3', genCNSMini());
-      set('vit-path-4', genPulmonaryMini());
-      set('vit-path-5', genSystemsMini());
-      set('vit-path-6', genLocomotorMini());
-    })();
-
-    // ── HEROS C3 histogram with lifecycle hooks ──
-    (function(){
-      const BASELINE = 148;
-      const states = [
-        [86,100,110,116,106,93,83,70,60,53,43,36,30,23,16,10],
-        [40,65,95,110,90,55,35,30,45,70,100,115,95,60,30,15],
-        [20,35,50,70,85,95,100,100,100,95,90,85,75,60,40,20],
-        [15,20,25,30,45,80,115,118,115,80,45,30,25,20,15,10],
-        [70,45,90,55,100,40,85,65,95,50,80,35,75,60,45,25],
-      ];
-      const view = document.querySelector('.v-c3');
-      const bars = document.querySelectorAll('#c3-bars .bar');
-      if (!bars.length) return;
-
-      let currentState = 0;
-      let c3Interval = null;
-      let stateTimeouts = [];
-
-      function applyStateStaggered(stateIdx) {
-        // Clear pending timeouts
-        stateTimeouts.forEach(t => clearTimeout(t));
-        stateTimeouts = [];
-
-        const heights = states[stateIdx];
-        bars.forEach((bar, i) => {
-          const t = setTimeout(() => {
-            const h = heights[i];
-            bar.setAttribute('y', BASELINE - h);
-            bar.setAttribute('height', h);
-          }, i * 40);
-          stateTimeouts.push(t);
-        });
-      }
-
-      // Attach lifecycle hooks to the view
-      if (view) {
-        view.__mount = function() {
-          currentState = 0;
-          applyStateStaggered(0);
-          c3Interval = setInterval(() => {
-            currentState = (currentState + 1) % states.length;
-            applyStateStaggered(currentState);
-          }, 3000);
-        };
-        view.__unmount = function() {
-          if (c3Interval) clearInterval(c3Interval);
-          stateTimeouts.forEach(t => clearTimeout(t));
-          stateTimeouts = [];
-        };
-      }
-    })();
-
-    // ── HEROS C7 view cycling (verbatim) ──
-    (function(){
-      const v1 = document.getElementById('c7v1');
-      const v2 = document.getElementById('c7v2');
-      if (!v1 || !v2) return;
-      setInterval(() => {
-        v1.classList.toggle('c7hidden');
-        v2.classList.toggle('c7hidden');
-      }, 14000);
-    })();
-
-    // ── C8a/C8b: Init flickering on pod ──
-    (function(){
-      const pod = document.getElementById('c8-pod');
-      if (pod) pod.classList.add('flickering');
-    })();
-
-    // ── C11 Terminal Typewriter with lifecycle hooks ──
-    (function(){
-      const container = document.getElementById('c11-terminal');
-      if (!container) return;
-      const view = document.querySelector('.v-c11');
-      const lines = [
-        { text: 'HEROS v1.0.0 | (c)2025 591 Ind.', cls: 'head' },
-        { text: '' },
-        { text: 'OpenHAL9000 Core Interface' },
-        { text: '──────────────────────────' },
-        { text: 'SUBSYSTEM STATUS:' },
-        { text: '  NAV ............ NOMINAL' },
-        { text: '  LSS ............ NOMINAL' },
-        { text: '  COM ............ STANDBY' },
-        { text: '  AE-35 .......... MONITOR' },
-        { text: '  ANTENNA ........ ALIGNED' },
-        { text: '  REACTOR ........ 98.7%' },
-        { text: '──────────────────────────' },
-        { text: 'ELAPSED: 201d 14h 22m' },
-        { text: 'CREW: HIB(3) ACTIVE(2)' },
-      ];
-      const CHAR_MS = 18, LINE_PAUSE = 80, HOLD_MS = 6000, CLEAR_MS = 400;
-      let timeouts = [];
-
-      function runCycle() {
-        while (container.firstChild) container.removeChild(container.firstChild);
-        let totalDelay = 0;
-        lines.forEach((line) => {
-          const div = document.createElement('div');
-          div.className = 'term-line' + (line.cls ? ' ' + line.cls : '');
-          container.appendChild(div);
-          if (line.text === '') { totalDelay += LINE_PAUSE; return; }
-          const chars = line.text.split('');
-          chars.forEach((ch, ci) => {
-            const t = setTimeout(() => { div.textContent += ch; }, totalDelay + ci * CHAR_MS);
-            timeouts.push(t);
-          });
-          totalDelay += chars.length * CHAR_MS + LINE_PAUSE;
-        });
-        const t = setTimeout(() => {
-          container.style.opacity = '0';
-          const t2 = setTimeout(() => { container.style.opacity = '1'; runCycle(); }, CLEAR_MS);
-          timeouts.push(t2);
-        }, totalDelay + HOLD_MS);
-        timeouts.push(t);
-      }
-
-      if (view) {
-        view.__mount = function() {
-          timeouts = [];
-          container.style.opacity = '1';
-          runCycle();
-        };
-        view.__unmount = function() {
-          timeouts.forEach(t => clearTimeout(t));
-          timeouts = [];
-          while (container.firstChild) container.removeChild(container.firstChild);
-        };
-      }
-    })();
-
-    // ── C12 SVG Wormhole (animated, no three.js) ──
-    (function(){
-      const target = document.getElementById('wormhole-svg');
-      if (!target) return;
-      const u_step = 0.3314285714285714;
-      const r = (u) => Math.exp(u) + Math.exp(-u) + 1;
-      const xf = (u) => Math.exp(u) / (Math.exp(u) + 1);
-      const xyz = ([th, u], th_steps) => [
-        Math.sin((th * Math.PI * 2) / th_steps) * r(u),
-        Math.cos((th * Math.PI * 2) / th_steps) * r(u),
-        -xf(u)
-      ];
-      const view = ([x, y, z], [rx, ry, rz]) => [x * rx, y * ry + z * rz + rz];
-      function steps(from, to, num_steps) {
-        return Array(num_steps).fill(0).map((_, i) => (i * (to - from)) / num_steps + from);
-      }
-      function range(n) { return Array(n).fill(0).map((_, i) => i); }
-      function cartesian(...a) {
-        return a.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat())));
-      }
-      const e_eq = (a, b) => a > b - 0.0001 && a < b + 0.0001;
-      function svgWormhole(c) {
-        const u_in = range(c.u_steps).map((x) => u_step * x - c.u_max);
-        const rv = [c.rx, c.ry, c.rz];
-        return '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="' + (-c.v) + ' ' + (-c.v) + ' ' + (2*c.v) + ' ' + (2*c.v) + '">' +
-          '<rect x="' + (-c.v) + '" y="' + (-c.v) + '" width="' + (2*c.v) + '" height="' + (2*c.v) + '" fill="black"/>' +
-          cartesian(u_in, range(c.th_steps)).map(([u_base, th]) => {
-            if (e_eq(u_base, c.u_max)) return '';
-            const u = u_base;
-            return '<polygon fill="black" stroke="rgba(140,200,255,0.5)" stroke-width="' + c.line_width + '" points="' +
-              steps(th, th+1, c.m_steps).map((th_i) => view(xyz([th_i, u], c.th_steps), rv).join()).join(' ') + ' ' +
-              steps(u, u+u_step, c.m_steps).map((u_i) => view(xyz([th+1, u_i], c.th_steps), rv).join()).join(' ') + ' ' +
-              steps(th+1, th, c.m_steps).map((th_i) => view(xyz([th_i, u+u_step], c.th_steps), rv).join()).join(' ') + ' ' +
-              steps(u+u_step, u, c.m_steps).map((u_i) => view(xyz([th, u_i], c.th_steps), rv).join()).join(' ') +
-            '"/>';
-          }).join('') +
-        '</svg>';
-      }
-      let lastFrame = 0;
-      const baseConfig = { th_steps: 14, u_steps: 20, m_steps: 6, line_width: 0.18, v: 22, u: 1, rx: 1, rz: 24 };
-      function animate(t) {
-        if (t - lastFrame < 125) { requestAnimationFrame(animate); return; }
-        lastFrame = t;
-        const time = t * 0.001;
-        const uMax = 2.9 + Math.sin(time * 0.4) * 2.9;
-        const ry = 0.5 + Math.sin(time * 0.15) * 0.15;
-        target.innerHTML = svgWormhole({ ...baseConfig, u_max: uMax, ry: ry });
-        requestAnimationFrame(animate);
-      }
-      requestAnimationFrame(animate);
-    })();
-
-    // ── C15 Signal Waveform ──
-    (function(){
-      const canvas = document.getElementById('c15-wave');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const size = { w: 0, h: 0 };
-
-      function resize() {
-        const parent = canvas.parentElement;
-        if (!parent) return;
-        const w = parent.offsetWidth, h = parent.offsetHeight;
-        if (!w || !h) return;
-        if (w === size.w && h === size.h) return;
-        size.w = w; size.h = h;
-        canvas.width = w * 2; canvas.height = h * 2;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(2, 2);
-      }
-
-      const ro = new ResizeObserver(resize);
-      ro.observe(canvas);
-
-      let phase = 0;
-      function draw() {
-        requestAnimationFrame(draw);
-        resize();
-        const w = size.w, h = size.h;
-        if (!w || !h) return;
-        phase += 0.04;
-        ctx.clearRect(0, 0, w, h);
-        ctx.strokeStyle = 'rgba(80,180,100,0.08)'; ctx.lineWidth = 0.5;
-        for (let y = 0; y < h; y += 20) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-        for (let x = 0; x < w; x += 20) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-        ctx.strokeStyle = 'rgba(80,180,100,0.15)';
-        ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke();
-        ctx.strokeStyle = 'rgba(80,220,120,0.6)'; ctx.lineWidth = 1.5;
-        ctx.shadowColor = 'rgba(80,220,120,0.3)'; ctx.shadowBlur = 4;
-        ctx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const t = x / w;
-          const y = h/2 + Math.sin(t * 12 + phase) * 30 + Math.sin(t * 28 + phase * 1.7) * 12 + Math.sin(t * 5 + phase * 0.3) * 18 + (Math.random() - 0.5) * 3;
-          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-      }
-      draw();
-    })();
-
-    // ── Extra hero view initialization (v-bell, v-defi) ──
-    (function(){
-      const bell = document.querySelector('.v-bell');
-      if (!bell) return;
-
-      // Reset animations on mount for fresh reveal each time
-      const resetAnimation = () => {
-        const svg = bell.querySelector('svg');
-        const grid = bell.querySelector('.v-bell-grid');
-        const labels = bell.querySelector('.v-bell-axis-labels');
-        const readout = bell.querySelector('.v-bell-readout');
-
-        [svg, grid, labels, readout].forEach(el => {
-          if (el) {
-            el.style.animation = 'none';
-            setTimeout(() => {
-              el.style.animation = '';
-            }, 10);
-          }
-        });
-      };
-
-      // Allow orchestrator to trigger fresh animation
-      if (bell.__resetAnimation) {
-        bell.__resetAnimation();
-      } else {
-        bell.__resetAnimation = resetAnimation;
-      }
-    })();
-
-
-    // ── Hero cell rotation: per-slot independent async loops ──
-    (function(){
-      const pool = document.querySelector('.hi-cell-pool');
-      if (!pool) return;
-      const slots = Array.from(document.querySelectorAll('.hi-slot'));
-      if (slots.length !== 8) return;
-
-      function pickView(name) {
-        return document.querySelector('.hi-view.' + name);
-      }
-
-      // View duration registry (in ms)
-      const VIEW_DURATIONS = {
-        'v-c1':  6000,   // multi-curve vector plot
-        'v-c2':  12000,  // data table scroll
-        'v-c3':  9000,   // 3 histogram states × 3s
-        'v-c4':  6000,   // targeting reticle
-        'v-c5':  12000,  // decay graph
-        'v-c6':  10000,  // typewriter chk-title
-        'v-c7':  14000,  // celestial nav — long sequence
-        'v-c8a': 6000,   // spacecraft schematic (pod)
-        'v-c8b': 6000,   // spacecraft schematic (discovery)
-        'v-c9':  8000,   // COM status
-        'v-c10': 7000,   // orbital tracker
-        'v-c11': 12000,  // terminal typewriter (longest)
-        'v-c12': 6000,   // wormhole
-        'v-c13': 8000,   // three.js globe
-        'v-c14': 6000,   // status indicators
-        'v-c15': 6000,   // waveform
-        'v-vit': 8000,   // mini vitals dashboard
-        // New tiles
-        'v-hib': 8000,   // HIB
-        'v-gde': 8000,   // GDE
-        'v-veh': 8000,   // VEH
-        'v-nuc': 8000,   // NUC
-        'v-dmg': 8000,   // DMG
-        'v-cnt': 8000,   // CNT
-        'v-flx': 8000,   // FLX
-        // Extra hero views
-        'v-bell': 8000,  // Bell curve data visualization
-        'v-prism': 8000, // Wireframe prism
-        'v-rem': 10000,  // Data table with chart
-        'v-expd': 8000,  // Exponential decay curves
-        'v-defi': 9000,  // Waveform with data grid
-        'v-cba': 7000,   // CBA code block
-      };
-
-      const REVEAL_MS = 0;
-      const HOLD_MS = 600;
-      const CONCEAL_MS = 0;
-
-      // Permanent assignment: each slot owns its own view list.
-      // Tiles are concentrated into 2 slots (0 and 5), interleaved with
-      // non-tile views so at most ~1-2 big-text tiles are on screen at once.
-      // The other 6 slots show only HEROS screens.
-      // Multi-tile slots alternate A/B across rounds:
-      // [tileA, nonA, nonB, tileB, nonA, nonB] — only one big-text tile per sub-cycle.
-      const ASSIGN = [
-        ['v-nuc', 'v-c1',  'v-c9',  'v-dmg', 'v-c1',  'v-c9'],   // slot 0 — NUC / DMG
-        ['v-c2',  'v-c10', 'v-rem'],                             // slot 1 (+v-rem)
-        ['v-c3',  'v-c11', 'v-prism'],                           // slot 2 (+v-prism)
-        ['v-c4',  'v-vit', 'v-c12', 'v-expd'],                   // slot 3 (+v-expd)
-        ['v-c5',  'v-c13'],                                      // slot 4
-        ['v-cnt', 'v-c6',  'v-c14', 'v-flx', 'v-c6',  'v-c14', 'v-bell'],  // slot 5 — CNT / FLX (+v-bell)
-        ['v-gde', 'v-c15', 'v-c7',  'v-veh', 'v-c15', 'v-c7', 'v-cba'],    // slot 6 — GDE / VEH (+v-cba)
-        ['v-c8a', 'v-c8b', 'v-hib', 'v-defi'],                   // slot 7 — HIB (+v-defi)
-      ];
-
-      const slotViews = ASSIGN.map(names => names.map(pickView).filter(Boolean));
-
-      // Move every view into the pool first.
-      slotViews.flat().forEach(v => { v.style.opacity = '1'; pool.appendChild(v); });
-
-      // Helpers for animation restart and mount/unmount
-      function restartCSSAnimations(root) {
-        const els = [root, ...root.querySelectorAll('*')];
-        els.forEach(el => {
-          const cs = getComputedStyle(el).animationName;
-          if (cs && cs !== 'none') {
-            el.style.animation = 'none';
-            void el.offsetWidth; // force reflow
-            el.style.animation = '';
-          }
-        });
-      }
-
-      function mount(slot, view) {
-        slot.appendChild(view);
-        view.classList.remove('paused');
-        restartCSSAnimations(view);
-        view.__mount?.();
-        view.style.opacity = '1';
-      }
-
-      function unmount(view) {
-        view.style.opacity = '0';
-        view.__unmount?.();
-        view.classList.add('paused');
-        pool.appendChild(view);
-      }
-
-      const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-      // Per-slot independent loop
-      async function runSlot(slotIdx) {
-        const list = slotViews[slotIdx];
-        const slot = slots[slotIdx];
-        let i = 0;
-
-        while (true) {
-          // Respect hidden document state
-          if (document.hidden) { await sleep(500); continue; }
-
-          const view = list[i];
-          const viewName = ASSIGN[slotIdx][i];
-          const duration = VIEW_DURATIONS[viewName] ?? 8000;
-
-          // Unmount current view if different
-          const current = slot.firstElementChild;
-          if (current && current !== view) {
-            current.style.opacity = '0';
-            await sleep(CONCEAL_MS);
-            unmount(current);
-          }
-
-          // Mount new view
-          mount(slot, view);
-          await sleep(duration + HOLD_MS);
-
-          i = (i + 1) % list.length;
-        }
-      }
-
-      // Initial mount: index 0 of each slot's list.
-      for (let i = 0; i < slots.length; i++) {
-        const v = slotViews[i][0];
-        if (v) { v.style.opacity = '1'; slots[i].appendChild(v); }
-      }
-
-      // Start independent loops for all slots with stagger
-      for (let i = 0; i < slots.length; i++) {
-        setTimeout(() => { runSlot(i); }, i * 250);
-      }
-
-      // Pause-on-hidden
-      document.addEventListener('visibilitychange', () => {
-        // Loop checks document.hidden on each iteration
-      });
-    })();
-
-    // ── Planet scene: drive --ps-progress (0..1) from scroll position over the CTA section ──
-    (function(){
-      var scene = document.getElementById('cta-planet-scene');
-      if (!scene) return;
-      var section = scene.closest('.cta-wrapper');
-      if (!section) return;
-      var ticking = false;
-      function update() {
-        ticking = false;
-        var rect = section.getBoundingClientRect();
-        var vh = window.innerHeight || document.documentElement.clientHeight;
-        // progress = how much of the section has scrolled past the bottom of the viewport,
-        // normalized over (sectionHeight + viewport) so 0 when section first appears at the
-        // bottom edge and 1 when it has fully scrolled past the top.
-        var total = rect.height + vh;
-        var travelled = vh - rect.top;
-        var p = Math.max(0, Math.min(1, travelled / total));
-        // Set on the wrapper so .planet-scene AND .cta-content both inherit it for fades.
-        section.style.setProperty('--ps-progress', p.toFixed(4));
-      }
-      function onScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      update();
-    })();
-
-  </script>
-
-  <script type="module">
-  import {
-    Scene, WebGLRenderer, PerspectiveCamera,
-    Mesh, MeshBasicMaterial, SphereGeometry
-  } from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-
-  // Wait for layout
-  requestAnimationFrame(() => { requestAnimationFrame(() => {
-    // ═══ C13: LARGE WIREFRAME GLOBE with lifecycle hooks ═══
-    (function(){
-      const container = document.getElementById('c13-globe');
-      if (!container) return;
-      const view = document.querySelector('.v-c13');
-
-      let started = false;
-      let renderer, camera, scene, sphere;
-      let lastW = 0, lastH = 0;
-      let renderRAF = null;
-
-      function dims() {
-        const parent = container.parentElement;
-        if (!parent) return { w: 0, h: 0 };
-        return { w: parent.offsetWidth, h: parent.offsetHeight };
-      }
-
-      function c13Start(w, h) {
-        renderer = new WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor(0x000000, 0);
-        renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border-radius:7px;z-index:0;';
-        container.appendChild(renderer.domElement);
-
-        scene = new Scene();
-        camera = new PerspectiveCamera(60, w / h, 0.1, 1000);
-        camera.position.z = 5.5;
-
-        const geometry = new SphereGeometry(2, 10, 8);
-        const material = new MeshBasicMaterial({ color: 0x4488cc, wireframe: true });
-        sphere = new Mesh(geometry, material);
-        scene.add(sphere);
-
-        lastW = w; lastH = h;
-        started = true;
-        render();
-      }
-
-      function applyResize(w, h) {
-        if (!started || !w || !h) return;
-        if (w === lastW && h === lastH) return;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        lastW = w; lastH = h;
-      }
-
-      function render() {
-        renderRAF = requestAnimationFrame(render);
-        if (!started) return;
-        const { w, h } = dims();
-        if (w !== lastW || h !== lastH) applyResize(w, h);
-        sphere.rotation.y += 0.005;
-        sphere.rotation.x = 0.2;
-        renderer.render(scene, camera);
-      }
-
-      const ro = new ResizeObserver(() => {
-        const { w, h } = dims();
-        if (!started) {
-          if (w > 0 && h > 0) c13Start(w, h);
-        } else {
-          applyResize(w, h);
-        }
-      });
-      ro.observe(container);
-      if (container.parentElement) ro.observe(container.parentElement);
-
-      // Try initial start if already sized
-      const { w, h } = dims();
-      if (w > 0 && h > 0) c13Start(w, h);
-
-      // Attach lifecycle hooks
-      if (view) {
-        view.__mount = function() {
-          if (!started) {
-            const { w, h } = dims();
-            if (w > 0 && h > 0) c13Start(w, h);
-          } else {
-            render();
-          }
-        };
-        view.__unmount = function() {
-          if (renderRAF) {
-            cancelAnimationFrame(renderRAF);
-            renderRAF = null;
-          }
-        };
-      }
-    })();
-  }); });
-  </script>
-</body>
-</html>
+</div>
+
+<script>
+// ── Parallax: mousemove rotates room on Y-axis after scroll completes ──
+(function() {
+  var fig = document.querySelector('.hero-tunnel .room-scene .lmc-room-stage figure');
+  if (!fig) return;
+  var scrollDone = false;
+
+  window.addEventListener('scroll', function() {
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    scrollDone = (window.scrollY / maxScroll) > 0.95;
+    if (!scrollDone) {
+      fig.style.transform = '';
+    }
+  });
+
+  window.addEventListener('mousemove', function(e) {
+    if (!scrollDone) return;
+    var vw = window.innerWidth;
+    var nx = (e.clientX - vw / 2) / (vw / 2);
+    var ry = nx * 1; // 1deg max — subtle enough to hide wall seams
+    fig.style.transform = 'translate(-50%, -50%) rotateY(' + ry + 'deg)';
+  });
+})();
+</script>
+</body></html>
