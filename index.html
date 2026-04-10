@@ -2035,7 +2035,7 @@
       width: var(--blade-d);
       height: 100%;
       /* white at the front edge of the cuboid (left of the element after rotation), dark at the back */
-      background: linear-gradient(to right, rgba(255,255,255,0.55), rgba(0,0,0,0.55));
+      background: linear-gradient(to right, rgba(255,255,255,0.55), transparent);
       opacity: 1;
       transform-origin: top left;
       transform: rotateY(90deg);
@@ -2050,8 +2050,8 @@
       right: 100%;
       width: var(--blade-d);
       height: 100%;
-      /* white at the front edge of the cuboid (right of the element after rotation), dark at the back */
-      background: linear-gradient(to left, rgba(255,255,255,0.55), rgba(0,0,0,0.55));
+      /* white at the front edge of the cuboid (right of the element after rotation), transparent at the back */
+      background: linear-gradient(to left, rgba(255,255,255,0.55), transparent);
       opacity: 1;
       transform-origin: top right;
       transform: rotateY(-90deg);
@@ -2068,7 +2068,7 @@
       width: 100%;
       height: var(--blade-d);
       /* white at the front edge (bottom of the element, which is the cuboid's top-front), dark at the back */
-      background: linear-gradient(to top, rgba(255,255,255,0.55), rgba(0,0,0,0.55));
+      background: linear-gradient(to top, rgba(255,255,255,0.55), transparent);
       opacity: 1;
       transform-origin: center bottom;
       transform: rotateX(-90deg);
@@ -2085,7 +2085,7 @@
       width: 100%;
       height: var(--blade-d);
       /* white at the front edge (top of the element, which is the cuboid's bottom-front), dark at the back */
-      background: linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(0,0,0,0.55));
+      background: linear-gradient(to bottom, rgba(255,255,255,0.55), transparent);
       opacity: 1;
       transform-origin: center top;
       transform: rotateX(90deg);
