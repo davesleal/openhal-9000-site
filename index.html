@@ -89,10 +89,8 @@
       text-align: left;
       gap: 160px;
       width: max-content;
-      margin: 0 0 24px;
-      position: relative;
-      left: 50%;
-      transform: translateX(-50%);
+      margin: 0 auto 24px;
+      padding: 60px 0;
     }
     .hero-stage .hi-sg-left  { margin-right: 0; }
     .hero-stage .hi-sg-right { margin-left:  0; }
@@ -525,6 +523,12 @@
       width: 100%;
       height: 100%;
       display: block;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%);
+              mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%);
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
     .v2-sweep {
       fill: none;
@@ -533,21 +537,13 @@
       stroke-linejoin: round;
       stroke-linecap: round;
       filter: var(--glow);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%);
-              mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%);
-      -webkit-mask-size: var(--tail) 100%;
-              mask-size: var(--tail) 100%;
-      -webkit-mask-repeat: no-repeat;
-              mask-repeat: no-repeat;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
     }
-    .v2-sweep-1 { --tail: 850px; --speed: 6.5s; -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s1; animation-duration: 6.5s; }
-    .v2-sweep-2 { --tail: 900px; --speed: 6.8s; -webkit-mask-size: 900px 100%; mask-size: 900px 100%; animation-name: v2-s2; animation-duration: 6.8s; }
-    .v2-sweep-3 { --tail: 800px; --speed: 7.2s; -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s3; animation-duration: 7.2s; }
-    .v2-sweep-4 { --tail: 850px; --speed: 6.2s; -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s4; animation-duration: 6.2s; }
-    .v2-sweep-5 { --tail: 800px; --speed: 7.5s; -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s5; animation-duration: 7.5s; }
-    .v2-sweep-6 { --tail: 950px; --speed: 6.0s; -webkit-mask-size: 950px 100%; mask-size: 950px 100%; animation-name: v2-s6; animation-duration: 6.0s; }
+    .v2-wave-1 { -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s1; animation-duration: 6.5s; }
+    .v2-wave-2 { -webkit-mask-size: 900px 100%; mask-size: 900px 100%; animation-name: v2-s2; animation-duration: 6.8s; }
+    .v2-wave-3 { -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s3; animation-duration: 7.2s; }
+    .v2-wave-4 { -webkit-mask-size: 850px 100%; mask-size: 850px 100%; animation-name: v2-s4; animation-duration: 6.2s; }
+    .v2-wave-5 { -webkit-mask-size: 800px 100%; mask-size: 800px 100%; animation-name: v2-s5; animation-duration: 7.5s; }
+    .v2-wave-6 { -webkit-mask-size: 950px 100%; mask-size: 950px 100%; animation-name: v2-s6; animation-duration: 6.0s; }
     /* Per-sweep keyframes with hardcoded mask-position values — Safari doesn't resolve var() inside @keyframes */
     @keyframes v2-s1 { 0% { -webkit-mask-position: -850px 0; mask-position: -850px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
     @keyframes v2-s2 { 0% { -webkit-mask-position: -900px 0; mask-position: -900px 0; } 100% { -webkit-mask-position: 1000px 0; mask-position: 1000px 0; } }
@@ -3869,7 +3865,7 @@
     }
 
     @media (max-width: 1100px) {
-      .hero-stage { gap: 80px; width: auto; left: auto; transform: none; justify-content: center; }
+      .hero-stage { gap: 80px; width: auto; }
     }
     @media (max-width: 860px) {
       .hero-stage { gap: 120px; }
@@ -4943,37 +4939,37 @@
       <div class="v2-row">
         <div class="v2-label v2-bg-cardio">Cardio<br>Vascular</div>
         <div class="v2-monitor v2-grid-cardio">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-1" class="v2-sweep v2-sweep-1" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-1" preserveAspectRatio="none"><path id="v2-path-1" class="v2-sweep" d="" /></svg>
         </div>
       </div>
       <div class="v2-row">
         <div class="v2-label v2-bg-metabolic">Metabolic<br>Levels</div>
         <div class="v2-monitor v2-grid-metabolic">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-2" class="v2-sweep v2-sweep-2" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-2" preserveAspectRatio="none"><path id="v2-path-2" class="v2-sweep" d="" /></svg>
         </div>
       </div>
       <div class="v2-row">
         <div class="v2-label v2-bg-cns">Central<br>Nerv. System</div>
         <div class="v2-monitor v2-grid-cns">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-3" class="v2-sweep v2-sweep-3" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-3" preserveAspectRatio="none"><path id="v2-path-3" class="v2-sweep" d="" /></svg>
         </div>
       </div>
       <div class="v2-row">
         <div class="v2-label v2-bg-pulmonary">Pulmonary<br>Function</div>
         <div class="v2-monitor v2-grid-pulmonary">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-4" class="v2-sweep v2-sweep-4" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-4" preserveAspectRatio="none"><path id="v2-path-4" class="v2-sweep" d="" /></svg>
         </div>
       </div>
       <div class="v2-row">
         <div class="v2-label v2-bg-systems">Systems<br>Integration</div>
         <div class="v2-monitor v2-grid-systems">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-5" class="v2-sweep v2-sweep-5" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-5" preserveAspectRatio="none"><path id="v2-path-5" class="v2-sweep" d="" /></svg>
         </div>
       </div>
       <div class="v2-row">
         <div class="v2-label v2-bg-locomotor">Locomotor<br>System</div>
         <div class="v2-monitor v2-grid-locomotor">
-          <svg viewBox="0 0 1000 100" class="v2-wave" preserveAspectRatio="none"><path id="v2-path-6" class="v2-sweep v2-sweep-6" d="" /></svg>
+          <svg viewBox="0 0 1000 100" class="v2-wave v2-wave-6" preserveAspectRatio="none"><path id="v2-path-6" class="v2-sweep" d="" /></svg>
         </div>
       </div>
     </div>
