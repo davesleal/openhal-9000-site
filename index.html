@@ -2527,13 +2527,13 @@
     .hi-s {
       width: 100%; height: 100%; border-radius: 3px; position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.8), inset 0 0 4px 4px rgba(0,0,0,0.9);
       animation: hiJitter 3.7s ease-in-out infinite;
     }
     .hi-s::after {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.035) 50%);
       background-size: 100% 3px; pointer-events: none; z-index: 3;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.8), inset 0 0 4px 4px rgba(0,0,0,0.9);
     }
     /* Chromatic aberration overlay — subtle RGB misconvergence */
     .hi-s::before {
@@ -3409,6 +3409,7 @@
       height: 100%;
       background: #0a1530;
       overflow: hidden;
+      box-sizing: border-box;
       font-family: var(--font-base);
       color: rgba(180, 210, 240, 0.75);
     }
