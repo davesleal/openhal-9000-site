@@ -2513,8 +2513,8 @@
       gap: 56px;
     }
     .hi-bz {
-      background: var(--bezel); border-radius: 10px; padding: 0;
-      position: relative; aspect-ratio: 1;
+      background: var(--bezel); border-radius: 10px; padding: 7px;
+      position: relative; aspect-ratio: 1; overflow: hidden;
       box-shadow: 3px 3px 14px rgba(0,0,0,0.9), inset -1px -1px 2px rgba(255,255,255,0.015);
     }
     .hi-bz::before {
@@ -2525,7 +2525,7 @@
       color: rgba(200,200,210,0.45); z-index: 5;
     }
     .hi-s {
-      width: 100%; height: 100%; border-radius: 7px; position: relative;
+      width: 100%; height: 100%; border-radius: 3px; position: relative;
       overflow: hidden; border: 1px solid #080808;
       box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
       animation: hiJitter 3.7s ease-in-out infinite;
@@ -3872,14 +3872,20 @@
       animation-delay: 0.4s;
     }
 
+    @media (max-width: 1400px) {
+      .hero-stage { gap: 80px; }
+      .hi-sg-hero { transform: scale(0.75); transform-origin: center; }
+    }
     @media (max-width: 1100px) {
-      .hi-sg-hero { display: none; }
-      .hero-stage {
-        width: auto;
-        left: auto;
-        transform: none;
-        justify-content: center;
-      }
+      .hero-stage { gap: 40px; width: auto; left: auto; transform: none; justify-content: center; }
+      .hi-sg-hero { transform: scale(0.55); transform-origin: center; }
+    }
+    @media (max-width: 860px) {
+      .hero-stage { flex-direction: column; gap: 32px; }
+      .hi-sg-hero { transform: scale(0.7); transform-origin: center; }
+    }
+    @media (max-width: 540px) {
+      .hi-sg-hero { transform: scale(0.5); transform-origin: center; }
     }
   </style>
 </head>
