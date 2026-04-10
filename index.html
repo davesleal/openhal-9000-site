@@ -1852,7 +1852,7 @@
       --hal-red: #da251d;
       --blade-w: 35px;
       --blade-h: 180px;
-      --blade-d: 8px;
+      --blade-d: 50px;
       perspective: 600px;
       perspective-origin: 50% 50%;
       flex: 0 0 auto; /* don't let .lmt-stripe-inner shrink the blade container — labels use flex:0 0 auto, must match */
@@ -1979,11 +1979,12 @@
       transform-style: preserve-3d;
       cursor: pointer;
 
+      transform: rotateY(-6deg) scale3d(1, 1, 0.15);
       transition: transform 1.4s cubic-bezier(0.22, 0.85, 0.25, 1);
     }
 
     .cuboid.ejected {
-      transform: scale3d(1, 1, 6);
+      transform: rotateY(-6deg) scale3d(1, 1, 1);
     }
 
     /* ======================================================
