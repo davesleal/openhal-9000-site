@@ -4144,26 +4144,27 @@
     @media (min-width: 769px) {
       .hero {
         height: 100dvh;
+        overflow: hidden;
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        box-sizing: border-box;
-      }
-      .hal-panel {
-        max-height: 50vh;
-        width: auto;
+        padding: 20px 40px;
       }
       .hero-stage {
         gap: clamp(40px, 8vw, 160px);
-        padding: 20px 0;
-        margin-bottom: 16px;
+        padding: 10px 0;
+        margin-bottom: 12px;
+        transform: scale(var(--hero-scale, 1));
+        transform-origin: center center;
+      }
+      .hal-panel {
+        max-height: 55vh;
+        width: auto;
       }
       .hero-title {
-        margin-top: 16px;
+        margin-top: 8px;
       }
     }
 
@@ -6132,6 +6133,22 @@
           }
         });
       }
+    })();
+
+    // ── Hero scale-to-fit ──
+    (function(){
+      var stage = document.querySelector('.hero-stage');
+      if (!stage || window.innerWidth < 769) return;
+      function fit(){
+        if (window.innerWidth < 769) { stage.style.removeProperty('--hero-scale'); return; }
+        stage.style.setProperty('--hero-scale', '1');
+        var nat = stage.scrollWidth;
+        var avail = window.innerWidth - 80;
+        var s = Math.min(1, avail / nat);
+        stage.style.setProperty('--hero-scale', s.toFixed(4));
+      }
+      fit();
+      window.addEventListener('resize', fit);
     })();
 
     // ── Memory cores: click to eject. HAL degrades progressively the more you pull ──
