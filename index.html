@@ -88,8 +88,12 @@
       justify-content: center;
       text-align: left;
       gap: 160px;
+      width: max-content;
       margin: 0 auto 24px;
       padding: 60px 0;
+      left: 50%;
+      transform: translateX(-50%);
+      position: relative;
     }
     .hero-stage .hi-sg-left  { margin-right: 0; }
     .hero-stage .hi-sg-right { margin-left:  0; }
@@ -857,10 +861,8 @@
     .lmc-stage-outer {
       position: relative;
       width: 100%;
+      height: 100vh;
       margin: 0 auto;
-      aspect-ratio: 980 / 788;
-      max-width: 1200px;
-      max-height: 88vh;
       overflow: hidden;
     }
     /* LMT is hidden by default; becomes a fullscreen modal layer in state-lmt */
@@ -901,9 +903,10 @@
       transition: transform 1.4s cubic-bezier(0.7, 0, 0.25, 1), opacity 1.2s ease;
     }
     .lmc-cabinet-inner {
-      width: 100%;
-      max-width: 980px;
+      height: 100%;
+      max-height: calc(100vh - 120px);
       aspect-ratio: 980 / 788;
+      max-width: 980px;
       position: relative;
       display: block;
     }
@@ -4156,7 +4159,7 @@
         gap: clamp(40px, 8vw, 160px);
         padding: 10px 0;
         margin-bottom: 12px;
-        transform: scale(var(--hero-scale, 1));
+        transform: translateX(-50%) scale(var(--hero-scale, 1));
         transform-origin: center center;
       }
       .hal-panel {
