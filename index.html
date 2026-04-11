@@ -4330,6 +4330,57 @@
         text-align: center;
         padding: 0 16px;
       }
+
+      /* ── LMC cabinet — mobile ── */
+      .lmc-stage-outer {
+        aspect-ratio: auto;
+        max-height: none;
+        min-height: 100dvh;
+      }
+      .lmc-cabinet {
+        padding: 16px;
+      }
+      .lmc-cabinet-inner {
+        max-width: none;
+        width: 100%;
+        aspect-ratio: auto;
+        height: calc(100dvh - 32px);
+      }
+      .lmc-cabinet-body {
+        border-radius: 8px;
+      }
+      .lmc-key {
+        width: 28px;
+        height: 28px;
+      }
+      .lmc-key-socket {
+        width: 14px;
+        height: 14px;
+        top: 7px;
+        left: 7px;
+      }
+      .lmc-key-bar {
+        width: 44px;
+        height: 6px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .lmc-key.tr .lmc-key-bar,
+      .lmc-key.br .lmc-key-bar {
+        left: auto;
+        right: 50%;
+        transform: translate(50%, -50%);
+      }
+      .lmc-strip {
+        font-size: clamp(7px, 2.8vw, 14px);
+      }
+      .lmc-hatches {
+        height: 50px;
+      }
+      .lmc-hatch {
+        border-width: 20px 25px 0 25px;
+      }
     }
   </style>
 </head>
