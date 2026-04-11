@@ -4184,6 +4184,15 @@
         height: 55dvh;
       }
 
+      /* ── Hide flanking screen grids on mobile ── */
+      .hi-sg-left,
+      .hi-sg-right {
+        display: none;
+      }
+      .hero-stage {
+        justify-content: center;
+      }
+
       /* ── Vitals section — mobile ── */
       section:has(.v2-retro-dashboard) {
         padding-left: 16px;
@@ -4253,6 +4262,47 @@
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
+      }
+
+      /* ── LMC Cabinet — mobile ── */
+      .lmc-cabinet {
+        padding: 16px 16px;
+      }
+      .lmc-cabinet-inner {
+        max-width: none;
+        width: 100%;
+      }
+      .lmc-strip {
+        font-size: clamp(8px, 2.6vw, 16px);
+      }
+      .lmc-key {
+        width: 32px;
+        height: 32px;
+      }
+      .lmc-key-socket {
+        left: 5px;
+        top: 5px;
+        width: 20px;
+        height: 20px;
+      }
+      .lmc-key-bar {
+        left: -10px;
+        top: 12px;
+        width: 50px;
+        height: 7px;
+        transform-origin: 23px 3.5px;
+      }
+      .lmc-key-bar::before {
+        width: 25px;
+        height: 7px;
+      }
+      .lmc-key-bar::after {
+        width: 25px;
+        height: 7px;
+      }
+      .lmc-key.tr .lmc-key-bar,
+      .lmc-key.br .lmc-key-bar {
+        right: -10px;
       }
 
       /* ── Footer — mobile ── */
