@@ -1723,29 +1723,7 @@
 
     /* ── HAL Easter egg overlay ── */
     .hal-whisper {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.98) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 800ms ease;
-    }
-    .hal-whisper.show { opacity: 1; pointer-events: auto; }
-    .hal-whisper-eye {
-      width: 260px;
-      height: 260px;
-      background: url('hal-eye.svg') center/contain no-repeat;
-      margin-bottom: 40px;
-      filter: drop-shadow(0 0 40px rgba(255,40,10,0.55));
-      animation: hal-pulse 2.4s ease-in-out infinite;
-    }
-    @keyframes hal-pulse {
-      0%, 100% { filter: drop-shadow(0 0 30px rgba(255,40,10,0.4)); }
-      50%      { filter: drop-shadow(0 0 70px rgba(255,80,30,0.85)); }
+      display: none;
     }
     .hal-whisper-stack {
       display: flex;
@@ -4162,6 +4140,33 @@
 
   </style>
   <style>
+    /* ── Desktop hero — fit within viewport height ── */
+    @media (min-width: 769px) {
+      .hero {
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        box-sizing: border-box;
+      }
+      .hal-panel {
+        max-height: 50vh;
+        width: auto;
+      }
+      .hero-stage {
+        gap: clamp(40px, 8vw, 160px);
+        padding: 20px 0;
+        margin-bottom: 16px;
+      }
+      .hero-title {
+        margin-top: 16px;
+      }
+    }
+
     /* ── Mobile — clip overflow, stack hero buttons ── */
     @media (max-width: 768px) {
       html, body {
@@ -4346,6 +4351,64 @@
       .lmc-cabinet-inner {
         max-width: calc(100vw - 32px);
         width: calc(100vw - 32px);
+      }
+      /* ── Rotate prompt for blade view on mobile portrait ── */
+      .rotate-prompt {
+        display: none;
+      }
+      .lmc-stage-outer.state-lmt .rotate-prompt {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: rgba(0,0,0,0.95);
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 20px;
+        color: rgba(255,255,255,0.7);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 14px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 40px;
+      }
+      .rotate-prompt-icon {
+        width: 60px;
+        height: 60px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 8px;
+        position: relative;
+        animation: rotateHint 2s ease-in-out infinite;
+      }
+      @keyframes rotateHint {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(90deg); }
+      }
+    }
+
+    /* Landscape: hide rotate prompt, adapt blade view */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .lmc-stage-outer.state-lmt .rotate-prompt {
+        display: none;
+      }
+      .lmc-stage-outer.state-lmt > .lmt-section {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .lmt-inner .main-container {
+        padding: 8px;
+      }
+      .scene {
+        width: 100%;
+      }
+    }
+
+    /* Portrait: ensure rotate prompt shows */
+    @media (max-width: 768px) and (orientation: portrait) {
+      .lmc-stage-outer.state-lmt .rotate-prompt {
+        display: flex;
       }
     }
   </style>
@@ -5715,6 +5778,12 @@
     </div>
   </div>
 
+  <!-- Rotate prompt for mobile blade view -->
+  <div class="rotate-prompt">
+    <div class="rotate-prompt-icon"></div>
+    <div>Rotate your device<br>to landscape</div>
+  </div>
+
   </div><!-- /lmc-stage-outer -->
 
   <!-- ═══ CTA with 3D Room Background ═══ -->
@@ -5939,8 +6008,18 @@
         if (cls) stage.classList.add(cls);
         if (cls === 'state-tunnel' || cls === 'state-zoomed' || cls === 'state-lmt') {
           document.body.style.overflow = 'hidden';
+          document.documentElement.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+          document.body.style.top = '-' + window.scrollY + 'px';
         } else {
+          var scrollY = document.body.style.top;
           document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.width = '';
+          document.body.style.top = '';
+          window.scrollTo(0, parseInt(scrollY || '0') * -1);
         }
         if (cls !== 'state-tunnel') {
           if (tunnelOverlay) { tunnelOverlay.scrollTop = 0; tunnelOverlay.style.pointerEvents = ''; }
