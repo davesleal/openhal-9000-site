@@ -2464,6 +2464,86 @@
       .vital-bar { height: 32px; justify-content: center; padding-right: 0; }
     }
 
+    /* ── IBM Terminal / Capabilities — mobile responsive ── */
+    @media (max-width: 768px) {
+      .ibm-section {
+        padding: 16px;
+      }
+      .screenOuterFrame {
+        padding: 16px 16px 14px;
+      }
+      .screenBorder {
+        padding: 8px;
+      }
+      .termTextBox {
+        padding: 20px 16px;
+      }
+      .terminalText, .term-line {
+        font-size: 13px;
+        word-break: break-word;
+      }
+      .term-code {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .feature-btns {
+        gap: 8px;
+      }
+      .feature-btns .btn {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 0;
+        height: 42px;
+        line-height: 42px;
+        font-size: 10px;
+        padding: 0 6px;
+        letter-spacing: 2px;
+      }
+    }
+
+    /* ── Briefing section — mobile responsive ── */
+    @media (max-width: 768px) {
+      .briefing-section {
+        height: auto;
+        min-height: 340px;
+        padding: 24px 16px 32px !important;
+      }
+      .briefing-sphere-wrap {
+        display: none;
+      }
+      .briefing-rivet {
+        display: none;
+      }
+      .briefing-svg {
+        position: relative;
+        width: 100%;
+        height: 120px;
+        margin-bottom: 8px;
+      }
+      .briefing-svg .svg-headline {
+        font-size: 48px;
+      }
+      .briefing-svg .svg-subhead {
+        font-size: 12px;
+      }
+      .briefing-svg .svg-footline {
+        font-size: 48px;
+      }
+      .briefing-body {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        max-width: 100%;
+        padding: 0 4px;
+        font-size: 10px;
+      }
+      .briefing-body li {
+        padding-left: 28px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+
     /* ── HEROS screens (verbatim from heros-interface.html) ── */
     :root {
       --font-display: 'Zalando Sans Expanded', 'League Spartan', 'Michroma', system-ui, sans-serif;
