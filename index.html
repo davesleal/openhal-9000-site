@@ -2572,6 +2572,7 @@
       grid-template-rows: repeat(2, 240px);
       gap: 56px;
     }
+
     .hi-bz {
       background: var(--bezel); border-radius: 10px; padding: 7px;
       position: relative; aspect-ratio: 1;
@@ -4133,6 +4134,39 @@
       100% { opacity: 1; }
     }
 
+  </style>
+  <style>
+    /* ── Hero / grid — mobile ── */
+    @media (max-width: 768px) {
+      .hero-stage {
+        width: 100%;
+        max-width: 100vw;
+        gap: 40px;
+        padding: 30px 16px;
+        flex-wrap: wrap;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+      .hi-sg, .hi-sg-hero {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        gap: 10px;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-actions .btn {
+        min-width: 0;
+        width: 100%;
+      }
+      html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+    }
   </style>
 </head>
 <body>
