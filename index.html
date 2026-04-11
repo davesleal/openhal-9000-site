@@ -364,6 +364,10 @@
       letter-spacing: 8px;
       text-transform: uppercase;
     }
+    /* Mobile-only HTML headings — hidden on desktop */
+    .briefing-mobile-headings {
+      display: none;
+    }
     /* HTML body — numbered list, EXPLOSIVE BOLTS movie format */
     .briefing-body {
       position: absolute;
@@ -2514,19 +2518,40 @@
         display: none;
       }
       .briefing-svg {
-        position: relative;
-        width: 100%;
-        height: 120px;
-        margin-bottom: 8px;
+        display: none;
       }
-      .briefing-svg .svg-headline {
-        font-size: 48px;
+      .briefing-mobile-headings {
+        display: block;
+        text-align: center;
+        margin-bottom: 16px;
       }
-      .briefing-svg .svg-subhead {
-        font-size: 12px;
+      .briefing-mobile-caution {
+        font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
+        font-size: 42px;
+        font-weight: 900;
+        color: #d62828;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        line-height: 1.1;
       }
-      .briefing-svg .svg-footline {
-        font-size: 48px;
+      .briefing-mobile-sub {
+        font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #222;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .briefing-mobile-system {
+        font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
+        font-size: 36px;
+        font-weight: 900;
+        color: #d62828;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        margin-top: 16px;
+        line-height: 1.1;
       }
       .briefing-body {
         position: relative;
@@ -4153,8 +4178,17 @@
       .hero {
         min-height: 100dvh;
       }
+      .hal-panel {
+        width: auto;
+        min-width: 0;
+        height: 55dvh;
+      }
 
       /* ── Vitals section — mobile ── */
+      section:has(.v2-retro-dashboard) {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
       .v2-row {
         height: 56px;
       }
@@ -4165,8 +4199,10 @@
         letter-spacing: 0.8px;
       }
       .v2-retro-dashboard {
-        margin-left: 16px;
-        margin-right: 16px;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        box-sizing: border-box;
       }
 
       /* ── Zero Gravity Toilet install section — mobile ── */
@@ -4200,6 +4236,28 @@
       .zg-text code {
         font-size: 11px;
         padding: 1px 4px;
+      }
+
+      /* ── CTA section — mobile ── */
+      .cta-wrapper {
+        min-height: 100dvh;
+      }
+      .cta-content {
+        padding: 40px 16px;
+      }
+      .cta-content .install-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      .cta-content .install-buttons .btn {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      /* ── Footer — mobile ── */
+      .footer {
+        padding: 24px 16px;
       }
     }
   </style>
@@ -5234,6 +5292,11 @@
         <span class="briefing-rivet l"></span>
         <span class="briefing-rivet r"></span>
       </div>
+    </div>
+    <div class="briefing-mobile-headings">
+      <div class="briefing-mobile-caution">CAUTION</div>
+      <div class="briefing-mobile-sub">Maintenance and Replacement Instructions</div>
+      <div class="briefing-mobile-system">System Briefing</div>
     </div>
     <svg class="briefing-svg" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid meet">
       <defs>
