@@ -4336,7 +4336,6 @@
       .lmc-stage-outer {
         aspect-ratio: auto;
         max-height: none;
-        min-height: 100dvh;
       }
       .lmc-cabinet {
         padding: 16px;
@@ -4344,43 +4343,35 @@
       .lmc-cabinet-inner {
         max-width: none;
         width: 100%;
-        aspect-ratio: auto;
-        height: calc(100dvh - 32px);
-      }
-      .lmc-cabinet-body {
-        border-radius: 8px;
+        aspect-ratio: 980 / 788;
       }
       .lmc-key {
         width: 28px;
         height: 28px;
       }
       .lmc-key-socket {
-        width: 14px;
-        height: 14px;
-        top: 7px;
-        left: 7px;
+        width: 17px;
+        height: 17px;
+        top: 5px;
+        left: 5px;
       }
       .lmc-key-bar {
-        width: 44px;
+        width: 43px;
         height: 6px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        top: 11px;
+        left: -8px;
+        transform-origin: 19px 3px;
+      }
+      .lmc-key.unlocked .lmc-key-bar {
+        transform: rotate(180deg);
       }
       .lmc-key.tr .lmc-key-bar,
       .lmc-key.br .lmc-key-bar {
         left: auto;
-        right: 50%;
-        transform: translate(50%, -50%);
+        right: -8px;
       }
       .lmc-strip {
         font-size: clamp(7px, 2.8vw, 14px);
-      }
-      .lmc-hatches {
-        height: 50px;
-      }
-      .lmc-hatch {
-        border-width: 20px 25px 0 25px;
       }
     }
   </style>
