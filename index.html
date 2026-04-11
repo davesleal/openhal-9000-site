@@ -4344,37 +4344,8 @@
         padding: 16px;
       }
       .lmc-cabinet-inner {
-        max-width: none;
-        width: 100%;
-        aspect-ratio: 980 / 788;
-      }
-      .lmc-key {
-        width: 28px;
-        height: 28px;
-      }
-      .lmc-key-socket {
-        width: 17px;
-        height: 17px;
-        top: 5px;
-        left: 5px;
-      }
-      .lmc-key-bar {
-        width: 43px;
-        height: 6px;
-        top: 11px;
-        left: -8px;
-        transform-origin: 19px 3px;
-      }
-      .lmc-key.unlocked .lmc-key-bar {
-        transform: rotate(180deg);
-      }
-      .lmc-key.tr .lmc-key-bar,
-      .lmc-key.br .lmc-key-bar {
-        left: auto;
-        right: -8px;
-      }
-      .lmc-strip {
-        font-size: clamp(7px, 2.8vw, 14px);
+        max-width: calc(100vw - 32px);
+        width: calc(100vw - 32px);
       }
     }
   </style>
