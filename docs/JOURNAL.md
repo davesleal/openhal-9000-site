@@ -1,5 +1,15 @@
 # OpenHAL 9000 Site — Journey Journal
 
+## 2026-04-12 — OG metadata and the social card
+
+The site had no Open Graph tags — share a link on Slack, Twitter, or iMessage and you'd get a bare URL with no preview. Fixed that today with a proper OG image and full metadata.
+
+The OG image (1200x630) was built by composing an HTML template with the `hal-eye.svg` asset, screenshotting it at exact dimensions via Playwright. The HAL eye sits left with a red ambient glow, "OpenHAL 9000" title right, tagline below, and a "Claude Code Plugin" badge. Dark background matches the site. It reads well at thumbnail scale — the red eye pops even at small sizes.
+
+Meta tags cover both Open Graph (`og:type`, `og:title`, `og:description`, `og:url`, `og:image` with dimensions) and Twitter Cards (`summary_large_image`). All image URLs are absolute, pointing to the GitHub Pages deployment.
+
+Commit: fa69de9.
+
 ## 2026-04-11 — The tunnel, the door, and the mobile reckoning
 
 Today the OpenHAL landing page got its signature moment: a scroll-driven tunnel transition that pulls you through a porthole into HAL's memory room. You scroll, the white panel zooms past like the starship hull in 2001, and the red room bleeds through a feathered radial mask — blurring into focus as you enter. When the scroll completes, "Click anywhere to access memory core" fades in. It feels like the film.
