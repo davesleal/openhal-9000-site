@@ -909,6 +909,9 @@
       max-width: 980px;
       position: relative;
       display: block;
+      /* Container query root — strip/screws size themselves via cqi so they
+         scale proportionally with the door width (never distort). */
+      container-type: inline-size;
     }
     /* lmc-unlocked legacy class — kept for compat but state-* classes take precedence */
     .lmc-stage-outer.lmc-unlocked:not(.state-unlocked):not(.state-zoomed):not(.state-lmt) .lmc-cabinet {
@@ -951,15 +954,18 @@
       top: 15.9%;
       width: 80%;
       height: 28.7%;
-      font-size: clamp(10px, 1.1vw, 16px);
+      /* Font-size scales with the cabinet's width (container query). At the
+         door's natural 980px width this resolves to ~16px; it shrinks
+         proportionally as the cabinet narrows so NO element distorts. */
+      font-size: 1.633cqi;
       transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1), opacity 1.2s ease;
     }
 
     /* Plaque corner screws — tiny radial brushed metal circles */
     .lmc-strip-screw {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 1.02cqi;
+      height: 1.02cqi;
       border-radius: 999px;
       border: 1px solid rgba(0,0,0,0.25);
       background-image:
@@ -979,10 +985,10 @@
         0 0 0 1px rgba(255,255,255,0.35);
       z-index: 5;
     }
-    .lmc-strip-screw-tl { top: 14px;    left: 14px; }
-    .lmc-strip-screw-tr { top: 14px;    right: 14px; }
-    .lmc-strip-screw-bl { bottom: 14px; left: 14px; }
-    .lmc-strip-screw-br { bottom: 14px; right: 14px; }
+    .lmc-strip-screw-tl { top: 1.43cqi;    left: 1.43cqi; }
+    .lmc-strip-screw-tr { top: 1.43cqi;    right: 1.43cqi; }
+    .lmc-strip-screw-bl { bottom: 1.43cqi; left: 1.43cqi; }
+    .lmc-strip-screw-br { bottom: 1.43cqi; right: 1.43cqi; }
 
     /* Grid-based panel structure with horizontally brushed metal bg */
     .lmc-strip-panel {
@@ -1294,6 +1300,34 @@
       mask-image: radial-gradient(circle at center, transparent 50%, black 95%);
       z-index: 2;
     }
+    /* Fullscreen icon centered in the porthole — only shown after the user
+       has entered the fullscreen modal at least once (stage has `has-entered`
+       class), as a hint that the porthole is clickable to re-enter. */
+    .lmc-porthole-hint {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .lmc-porthole-hint svg {
+      width: 28%;
+      height: 28%;
+      color: rgba(255,255,255,0.92);
+      filter:
+        drop-shadow(0 0 12px rgba(0,0,0,0.85))
+        drop-shadow(0 0 4px rgba(255,255,255,0.35));
+      animation: portholeHintPulse 2.2s ease-in-out infinite;
+    }
+    .lmc-stage-outer.has-entered .lmc-porthole-hint {
+      display: flex;
+    }
+    @keyframes portholeHintPulse {
+      0%, 100% { opacity: 0.65; transform: scale(1); }
+      50%      { opacity: 1;    transform: scale(1.08); }
+    }
 
     /* ── state: unlocked — but cabinet still visible (lmt-section hidden) ── */
     .lmc-stage-outer .lmt-section {
@@ -1509,7 +1543,9 @@
       box-shadow: 0 4px 4px rgba(0,0,0,0.25);
       display: flex;
       overflow: hidden;
-      transform-origin: 30.5px 4.5px;
+      /* Pivot at the socket center. Socket center = (21,21) in key coords;
+         bar origin = (-13,17), so socket center in bar-local = (34,4). */
+      transform-origin: 34px 4px;
       transition: transform 0.6s ease;
     }
     .lmc-key-bar::before {
@@ -1531,11 +1567,14 @@
     .lmc-key.tr { top: 2px; right: 4px; }
     .lmc-key.bl { bottom: 2px; left: 4px; }
     .lmc-key.br { bottom: 2px; right: 4px; }
-    /* TR and BR: flip bar offset so handle extends right/outward */
+    /* TR and BR: flip bar offset so handle extends right/outward. Bar ends
+       up at bar-local (-11, 18) due to the 1px key border, so socket center
+       in bar-local = (33, 4). */
     .lmc-key.tr .lmc-key-bar,
     .lmc-key.br .lmc-key-bar {
       left: auto;
       right: -13px;
+      transform-origin: 33px 4px;
     }
 
     .lmt-warning {
@@ -2485,39 +2524,59 @@
       }
     }
 
-    /* ── Briefing section — mobile responsive ── */
+    /* ── Briefing section — mobile: full viewport height, sphere visible
+       in the background, content (CAUTION → list → SYSTEM BRIEFING) stacked
+       and centered inside the circle. ── */
     @media (max-width: 768px) {
       .briefing-section {
-        height: auto;
-        min-height: 340px;
-        padding: 24px 16px 32px !important;
+        height: 100dvh;
+        min-height: 0;
+        padding: 0 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
+      /* Sphere sits behind the stacked content as a decorative circle. */
       .briefing-sphere-wrap {
-        display: none;
+        display: flex;
+        position: absolute;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 0;
       }
-      .briefing-rivet {
-        display: none;
+      .briefing-sphere {
+        /* Allowed to overflow the viewport slightly — mild crop on the
+           narrower dimension so the circle fills more of the frame. */
+        width: 115vmin;
+        height: 115vmin;
+        max-width: none;
       }
-      .briefing-svg {
-        display: none;
-      }
+      .briefing-rivet { display: none; }
+      /* Skip the curved SVG on mobile — too cramped. Use HTML headings. */
+      .briefing-svg { display: none; }
       .briefing-mobile-headings {
         display: block;
         text-align: center;
-        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+        padding: 0;
+        margin: 0;
       }
       .briefing-mobile-caution {
         font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
-        font-size: 42px;
+        font-size: clamp(24px, 8vw, 44px);
         font-weight: 900;
         color: #d62828;
-        letter-spacing: 6px;
+        letter-spacing: clamp(2px, 0.8vw, 6px);
         text-transform: uppercase;
-        line-height: 1.1;
+        line-height: 1.0;
       }
       .briefing-mobile-sub {
         font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
-        font-size: 13px;
+        font-size: clamp(8px, 2.2vw, 12px);
         font-weight: 700;
         color: #222;
         letter-spacing: 2px;
@@ -2526,28 +2585,36 @@
       }
       .briefing-mobile-system {
         font-family: 'League Spartan', 'IBM Plex Sans', sans-serif;
-        font-size: 36px;
+        font-size: clamp(20px, 7vw, 38px);
         font-weight: 900;
         color: #d62828;
-        letter-spacing: 5px;
+        letter-spacing: clamp(2px, 0.7vw, 5px);
         text-transform: uppercase;
-        margin-top: 16px;
-        line-height: 1.1;
+        line-height: 1.0;
         text-align: center;
+        position: relative;
+        z-index: 1;
+        margin-top: clamp(8px, 1.6vh, 14px);
+        display: block;
       }
       .briefing-body {
         position: relative;
+        z-index: 1;
         top: auto;
         left: auto;
         transform: none;
-        max-width: 100%;
-        padding: 0 4px;
-        font-size: 10px;
+        max-width: min(70vw, 70vh);
+        width: auto;
+        padding: 0;
+        font-size: clamp(7px, 1.9vw, 10px);
+        line-height: 1.3;
+        margin: clamp(8px, 1.6vh, 14px) 0 0;
       }
       .briefing-body li {
-        padding-left: 28px;
+        padding-left: 20px;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        margin-bottom: 2px;
       }
     }
 
@@ -4115,13 +4182,13 @@
     }
 
     @keyframes tunnelRoomMask {
-      0%   { -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin); mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 25vmin); }
-      10%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin); mask: radial-gradient(circle at 50% 50%, black 24vmin, transparent 28vmin); }
-      25%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin); mask: radial-gradient(circle at 50% 50%, black 28vmin, transparent 36vmin); }
-      40%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin); mask: radial-gradient(circle at 50% 50%, black 36vmin, transparent 50vmin); }
-      60%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin); mask: radial-gradient(circle at 50% 50%, black 55vmin, transparent 75vmin); }
-      80%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin); mask: radial-gradient(circle at 50% 50%, black 80vmin, transparent 100vmin); }
-      100% { -webkit-mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin); mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 120vmin); }
+      0%   { -webkit-mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 26vmin); mask: radial-gradient(circle at 50% 50%, black 22vmin, transparent 26vmin); }
+      10%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 32vmin, transparent 40vmin); mask: radial-gradient(circle at 50% 50%, black 32vmin, transparent 40vmin); }
+      25%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 50vmin, transparent 62vmin); mask: radial-gradient(circle at 50% 50%, black 50vmin, transparent 62vmin); }
+      40%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 72vmin, transparent 90vmin); mask: radial-gradient(circle at 50% 50%, black 72vmin, transparent 90vmin); }
+      60%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 125vmin); mask: radial-gradient(circle at 50% 50%, black 100vmin, transparent 125vmin); }
+      80%  { -webkit-mask: radial-gradient(circle at 50% 50%, black 130vmin, transparent 160vmin); mask: radial-gradient(circle at 50% 50%, black 130vmin, transparent 160vmin); }
+      100% { -webkit-mask: radial-gradient(circle at 50% 50%, black 160vmin, transparent 200vmin); mask: radial-gradient(circle at 50% 50%, black 160vmin, transparent 200vmin); }
     }
 
     @keyframes tunnelRoomReveal {
@@ -4141,9 +4208,53 @@
       100% { opacity: 1; }
     }
 
+    /* ── Tunnel scroll hint — visible immediately on tunnel entry, then
+       fades out as the user starts scrolling into the room. ── */
+    .tunnel-scroll-hint { display: none; }
+    .lmc-stage-outer.state-tunnel .tunnel-scroll-hint {
+      display: flex;
+      position: fixed;
+      bottom: 14vh;
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 10001;
+      color: rgba(255,255,255,0.92);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      pointer-events: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85), 0 0 4px rgba(255,255,255,0.3);
+      /* Base state: fully visible. The scroll-timeline animation below
+         progressively fades it as the user scrolls. */
+      opacity: 0.95;
+      animation: tunnelScrollHintFade linear forwards;
+      animation-timeline: --tunnel;
+      animation-range: 0vh 30vh;
+    }
+    .tunnel-scroll-hint-arrow {
+      font-size: 18px;
+      line-height: 1;
+      animation: tunnelScrollHintBob 1.4s ease-in-out infinite;
+    }
+    @keyframes tunnelScrollHintFade {
+      0%, 30% { opacity: 0.95; }
+      100%    { opacity: 0; }
+    }
+    @keyframes tunnelScrollHintBob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(5px); }
+    }
+
   </style>
   <style>
-    /* ── Desktop hero — fit within viewport height ── */
+    /* ── Desktop hero — fit the ENTIRE hero (stage + title + tagline + buttons)
+       within 100dvh. Sizing is driven by --hero-scale (set by JS), applied via
+       `zoom` on the stage so ALL descendants (screens, animations, HAL, fonts,
+       strokes) shrink uniformly without touching per-element CSS. ── */
     @media (min-width: 769px) {
       .hero {
         height: 100dvh;
@@ -4156,15 +4267,21 @@
         padding: 20px 40px;
       }
       .hero-stage {
+        /* Flex parent handles horizontal centering — override the base rule's
+           manual `position:relative; left:50%; translateX(-50%)` trick, which
+           otherwise offsets the stage off-center under `zoom`. */
+        position: static;
+        left: auto;
+        transform: none;
+        margin-left: 0;
+        margin-right: 0;
         gap: clamp(40px, 8vw, 160px);
-        padding: 10px 0;
+        padding: 0;
         margin-bottom: 12px;
-        transform: translateX(-50%) scale(var(--hero-scale, 1));
-        transform-origin: center center;
+        zoom: var(--hero-scale, 1);
       }
       .hal-panel {
-        max-height: 55vh;
-        width: auto;
+        max-height: none;
       }
       .hero-title {
         margin-top: 8px;
@@ -4298,9 +4415,9 @@
         max-width: none;
         width: 100%;
       }
-      .lmc-strip {
-        font-size: clamp(8px, 2.6vw, 16px);
-      }
+      /* Strip font-size is now driven by container queries on
+         .lmc-cabinet-inner (1.633cqi ≈ 16px at 980px cabinet); no mobile
+         override needed — it scales proportionally with the cabinet width. */
       .lmc-key {
         width: 32px;
         height: 32px;
@@ -4316,7 +4433,8 @@
         top: 12px;
         width: 50px;
         height: 7px;
-        transform-origin: 23px 3.5px;
+        /* Socket center (15,15); bar origin (-10,12) → socket in bar-local (25,3). */
+        transform-origin: 25px 3px;
       }
       .lmc-key-bar::before {
         width: 25px;
@@ -4329,6 +4447,9 @@
       .lmc-key.tr .lmc-key-bar,
       .lmc-key.br .lmc-key-bar {
         right: -10px;
+        /* Bar lands at bar-local (-9, 13) in rect coords (like TL/BL), so
+           socket center in bar-local = (25, 3). */
+        transform-origin: 25px 3px;
       }
 
       /* ── Footer — mobile ── */
@@ -4355,6 +4476,12 @@
       .lmc-cabinet-inner {
         max-width: calc(100vw - 32px);
         width: calc(100vw - 32px);
+        /* Release the desktop `height: 100%` so the 980/788 aspect ratio
+           actually drives the height from the width. Otherwise the door is
+           stretched vertically and all its percentage-positioned children
+           (strip, hatches, keys) end up distorted. */
+        height: auto;
+        max-height: none;
       }
       /* ── Rotate prompt for blade view on mobile portrait ── */
       .rotate-prompt {
@@ -5414,7 +5541,7 @@
     </div>
 
     <h1 class="hero-title">OpenHAL 9000</h1>
-    <p class="hero-tagline">Give your CLI a voice — the voice of HAL 9000</p>
+    <p class="hero-tagline">Give your CLI the voice of HAL 9000</p>
     <div class="hero-actions">
       <a href="#install" class="btn illuminated">Install</a>
       <button type="button" class="btn btn-hal-intro" id="play-label" aria-label="Play HAL 9000 voice greeting">Introduction</button>
@@ -5729,6 +5856,11 @@
     </figure>
     </div>
         </div><!-- /lmc-mini-room -->
+        <div class="lmc-porthole-hint" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 9V4H9M15 4H20V9M20 15V20H15M9 20H4V15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         </div><!-- /lmc-porthole -->
       </div><!-- /lmc-viewport -->
 
@@ -5780,6 +5912,12 @@
     <div class="tunnel-scroll-area">
       <div class="tunnel-panel"></div>
     </div>
+  </div>
+
+  <!-- Scroll hint — visible briefly at the start of the tunnel state -->
+  <div class="tunnel-scroll-hint" aria-hidden="true">
+    <div class="tunnel-scroll-hint-text">Scroll to enter</div>
+    <div class="tunnel-scroll-hint-arrow">↓</div>
   </div>
 
   <!-- Rotate prompt for mobile blade view -->
@@ -6005,18 +6143,31 @@
 
       // ── State transitions ──
       var STATE_CLASSES = ['state-unlocked', 'state-tunnel', 'state-zoomed', 'state-lmt'];
+      var LOCKED_STATES = ['state-tunnel', 'state-zoomed', 'state-lmt'];
       var tunnelScrollDone = false;
       var tunnelOverlay = document.getElementById('tunnel-overlay');
+      function isLocked() {
+        return LOCKED_STATES.some(function(s) { return stage.classList.contains(s); });
+      }
       function setState(cls) {
+        var wasLocked = isLocked();
         STATE_CLASSES.forEach(function(c) { stage.classList.remove(c); });
         if (cls) stage.classList.add(cls);
-        if (cls === 'state-tunnel' || cls === 'state-zoomed' || cls === 'state-lmt') {
+        var willBeLocked = LOCKED_STATES.indexOf(cls) >= 0;
+
+        if (willBeLocked && !wasLocked) {
+          // Entering locked mode from normal — capture current scroll BEFORE
+          // touching body styles. Setting body position:fixed / overflow:hidden
+          // can collapse the document height and reset window.scrollY to 0,
+          // so we must read it first.
+          var savedY = window.scrollY;
           document.body.style.overflow = 'hidden';
           document.documentElement.style.overflow = 'hidden';
           document.body.style.position = 'fixed';
           document.body.style.width = '100%';
-          document.body.style.top = '-' + window.scrollY + 'px';
-        } else {
+          document.body.style.top = '-' + savedY + 'px';
+        } else if (!willBeLocked && wasLocked) {
+          // Leaving locked mode — restore scroll.
           var scrollY = document.body.style.top;
           document.body.style.overflow = '';
           document.documentElement.style.overflow = '';
@@ -6024,7 +6175,13 @@
           document.body.style.width = '';
           document.body.style.top = '';
           window.scrollTo(0, parseInt(scrollY || '0') * -1);
+          // Mark that the user has visited the fullscreen room at least once —
+          // the porthole will now show the fullscreen hint icon.
+          stage.classList.add('has-entered');
         }
+        // else: staying within locked or within normal — do NOT touch
+        // document.body.style.top, otherwise we lose the saved scroll.
+
         if (cls !== 'state-tunnel') {
           if (tunnelOverlay) { tunnelOverlay.scrollTop = 0; tunnelOverlay.style.pointerEvents = ''; }
           tunnelScrollDone = false;
@@ -6139,19 +6296,74 @@
     })();
 
     // ── Hero scale-to-fit ──
+    // Computes a single --hero-scale that fits the stage (screens + HAL) into
+    // the available width AND the height remaining after the title/tagline/
+    // buttons below it. Sizing is driven through CSS calc(... * var(--hero-scale)),
+    // so the layout collapses instead of just visually shrinking via transform.
     (function(){
       var stage = document.querySelector('.hero-stage');
-      if (!stage || window.innerWidth < 769) return;
+      var hero  = document.querySelector('.hero');
+      var title = document.querySelector('.hero-title');
+      var tag   = document.querySelector('.hero-tagline');
+      var btns  = document.querySelector('.hero-actions');
+      if (!stage || !hero) return;
+
       function fit(){
         if (window.innerWidth < 769) { stage.style.removeProperty('--hero-scale'); return; }
+        // Measure at scale 1 so we get the NATURAL dimensions.
         stage.style.setProperty('--hero-scale', '1');
-        var nat = stage.scrollWidth;
-        var avail = window.innerWidth - 80;
-        var s = Math.min(1, avail / nat);
+
+        // Force reflow so scrollWidth/scrollHeight reflect scale=1.
+        void stage.offsetWidth;
+
+        var natW = stage.scrollWidth;
+        var natH = stage.scrollHeight;
+        if (!natW || !natH) return;
+
+        // Reserve vertical space for the text block below the stage.
+        // offsetHeight already includes each element's own content height; we add
+        // the in-flow margins that separate them (title mt 8, title mb 12,
+        // tagline mb 32, actions mt 8 → ~60), plus stage margin-bottom 12,
+        // plus hero padding 20+20. Slight extra for breathing room.
+        var textH = 0;
+        if (title) textH += title.offsetHeight;
+        if (tag)   textH += tag.offsetHeight;
+        if (btns)  textH += btns.offsetHeight;
+        var framing = 8 + 12 + 32 + 8 + 12 + 40 + 16; // margins + hero padding + slack
+
+        var availW = window.innerWidth  - 80;               // hero horizontal padding 40+40
+        var availH = window.innerHeight - textH - framing;
+
+        var s = Math.min(1, availW / natW, availH / natH);
+        if (!isFinite(s) || s <= 0) s = 1;
         stage.style.setProperty('--hero-scale', s.toFixed(4));
+      }
+
+      // Run after layout so offsetHeight readings are correct.
+      requestAnimationFrame(fit);
+      window.addEventListener('resize', fit);
+      window.addEventListener('load', fit);
+    })();
+
+    // ── LMT blade scale-to-fit ──
+    // The blade rack + labels natively need ~1340px of horizontal room. On
+    // narrower viewports we apply `zoom` to each `.scene` (top labels, blade
+    // rack, bottom footers) so every pixel value (blade widths, label boxes,
+    // gaps, borders) shrinks together without touching the original
+    // per-element CSS. The outer .lmt-stripe stays 100vw so the red band
+    // still fills edge-to-edge.
+    (function(){
+      var TARGET = 1340;
+      function fit(){
+        var vw = window.innerWidth;
+        var scale = Math.min(1, Math.max(0.25, (vw - 24) / TARGET));
+        document.querySelectorAll('.lmt-section .scene').forEach(function(el) {
+          el.style.zoom = scale;
+        });
       }
       fit();
       window.addEventListener('resize', fit);
+      window.addEventListener('load', fit);
     })();
 
     // ── Memory cores: click to eject. HAL degrades progressively the more you pull ──
